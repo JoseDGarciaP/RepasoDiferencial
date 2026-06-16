@@ -1,0 +1,2392 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guía Completa — Habilitación Cálculo Diferencial</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body, {
+    delimiters: [
+      {left: '$$', right: '$$', display: true},
+      {left: '$', right: '$', display: false}
+    ]
+  });"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #232736;
+    --border: #2e3347;
+    --text: #e2e4ed;
+    --text-dim: #8b8fa7;
+    --accent: #6c8cff;
+    --accent-dim: #4a63b8;
+    --green: #4ade80;
+    --green-dim: #166534;
+    --orange: #fb923c;
+    --orange-dim: #7c3a12;
+    --red: #f87171;
+    --red-dim: #7f1d1d;
+    --purple: #c084fc;
+    --purple-dim: #581c87;
+    --yellow: #fbbf24;
+    --root-highlight: #ff6b9d;
+    --root-bg: rgba(255, 107, 157, 0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  /* HEADER */
+  header {
+    text-align: center;
+    padding: 60px 20px 40px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+  header h1 {
+    font-size: 2.2em;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 10px;
+  }
+  header p {
+    color: var(--text-dim);
+    font-size: 1.05em;
+  }
+  .root-badge {
+    display: inline-block;
+    background: var(--root-bg);
+    border: 1px solid var(--root-highlight);
+    color: var(--root-highlight);
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    margin-top: 15px;
+    font-weight: 600;
+  }
+
+  /* NAV */
+  nav {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 50px;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    padding: 15px 0;
+    z-index: 100;
+    border-bottom: 1px solid var(--border);
+  }
+  nav a {
+    background: var(--surface);
+    color: var(--text-dim);
+    text-decoration: none;
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-size: 0.9em;
+    font-weight: 600;
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+  }
+  nav a:hover {
+    background: var(--surface2);
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* SECTIONS */
+  .charla {
+    margin-bottom: 60px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--border);
+  }
+  .charla-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+  }
+  .charla-num {
+    background: linear-gradient(135deg, var(--accent), var(--purple));
+    color: white;
+    width: 50px; height: 50px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800;
+    font-size: 1.3em;
+    flex-shrink: 0;
+  }
+  .charla-header h2 {
+    font-size: 1.6em;
+    font-weight: 700;
+  }
+
+  /* THEORY BOX */
+  .teoria {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 25px;
+  }
+  .teoria h3 {
+    color: var(--accent);
+    font-size: 1.15em;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .teoria h3::before {
+    content: '📐';
+  }
+  .teoria p, .teoria li {
+    margin-bottom: 8px;
+  }
+  .teoria ul { padding-left: 20px; }
+
+  /* FORMULA BOX */
+  .formula {
+    background: rgba(108, 140, 255, 0.06);
+    border-left: 4px solid var(--accent);
+    padding: 18px 22px;
+    margin: 15px 0;
+    border-radius: 0 8px 8px 0;
+    font-size: 1.05em;
+  }
+
+  /* ROOT ALERT */
+  .root-alert {
+    background: var(--root-bg);
+    border: 1px solid var(--root-highlight);
+    border-radius: 12px;
+    padding: 20px 25px;
+    margin: 20px 0;
+  }
+  .root-alert h4 {
+    color: var(--root-highlight);
+    margin-bottom: 8px;
+    font-size: 1.05em;
+  }
+  .root-alert h4::before {
+    content: '⚠️ ';
+  }
+
+  /* EXAMPLE (solved) */
+  .ejemplo {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin: 20px 0;
+    overflow: hidden;
+  }
+  .ejemplo-header {
+    background: var(--surface2);
+    padding: 14px 22px;
+    font-weight: 700;
+    color: var(--green);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+  }
+  .ejemplo-header::after {
+    content: '▼';
+    font-size: 0.7em;
+    transition: transform 0.3s;
+  }
+  .ejemplo-header.closed::after {
+    transform: rotate(-90deg);
+  }
+  .ejemplo-body {
+    padding: 22px;
+  }
+  .ejemplo-body.hidden {
+    display: none;
+  }
+
+  /* STEPS */
+  .paso {
+    margin: 12px 0;
+    padding: 12px 18px;
+    border-left: 3px solid var(--accent-dim);
+    background: rgba(108, 140, 255, 0.03);
+    border-radius: 0 6px 6px 0;
+  }
+  .paso-label {
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 0.85em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+  .paso.root-step {
+    border-left-color: var(--root-highlight);
+    background: var(--root-bg);
+  }
+  .paso.root-step .paso-label {
+    color: var(--root-highlight);
+  }
+
+  /* PRACTICE */
+  .practica {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 25px;
+    margin: 25px 0;
+  }
+  .practica h3 {
+    color: var(--orange);
+    margin-bottom: 15px;
+  }
+  .practica h3::before {
+    content: '✏️ ';
+  }
+  .practica ol {
+    padding-left: 25px;
+  }
+  .practica li {
+    margin-bottom: 10px;
+    padding: 5px 0;
+  }
+  .practica li.root-ex {
+    border-left: 3px solid var(--root-highlight);
+    padding-left: 12px;
+    margin-left: -25px;
+    padding-left: 37px;
+  }
+
+  /* ANSWERS */
+  .respuestas {
+    margin-top: 15px;
+    background: var(--surface2);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .resp-toggle {
+    padding: 12px 18px;
+    cursor: pointer;
+    color: var(--yellow);
+    font-weight: 600;
+    user-select: none;
+  }
+  .resp-content {
+    padding: 0 18px 15px;
+    display: none;
+    color: var(--text-dim);
+  }
+
+  /* TIPS */
+  .tip {
+    background: rgba(74, 222, 128, 0.06);
+    border: 1px solid var(--green-dim);
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin: 15px 0;
+  }
+  .tip h4 {
+    color: var(--green);
+    margin-bottom: 6px;
+  }
+  .tip h4::before { content: '💡 '; }
+
+  /* SUB-SECTIONS */
+  .subtema {
+    margin: 30px 0;
+  }
+  .subtema h3 {
+    font-size: 1.2em;
+    color: var(--purple);
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* KaTeX overrides */
+  .katex { font-size: 1.1em; }
+  .katex-display { margin: 15px 0; overflow-x: auto; }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    header h1 { font-size: 1.5em; }
+    nav { gap: 5px; }
+    nav a { padding: 6px 12px; font-size: 0.8em; }
+    .container { padding: 12px; }
+    .charla-header h2 { font-size: 1.2em; }
+  }
+
+  /* SOLUTION ITEMS IN ANSWERS */
+  .solucion {
+    margin: 18px 0;
+    padding: 18px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+  }
+  .solucion-title {
+    color: var(--yellow);
+    font-weight: 700;
+    font-size: 1em;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .solucion .paso { margin: 8px 0; padding: 10px 14px; }
+  .solucion .resultado {
+    background: rgba(74, 222, 128, 0.08);
+    border: 1px solid var(--green-dim);
+    border-radius: 8px;
+    padding: 10px 16px;
+    margin-top: 10px;
+    color: var(--green);
+    font-weight: 600;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Guía de Habilitación — Cálculo Diferencial</h1>
+  <p>Teoría · Ejercicios Resueltos Paso a Paso · Práctica</p>
+  <div class="root-badge">🔴 Énfasis especial en ejercicios con RAÍCES</div>
+</header>
+
+<nav>
+  <a href="#charla3">Charla 3 · Inecuaciones</a>
+  <a href="#charla4">Charla 4 · Funciones</a>
+  <a href="#charla5">Charla 5 · Límites</a>
+  <a href="#charla6">Charla 6 · Derivadas</a>
+</nav>
+
+<div class="container">
+
+<!-- ============================================================ -->
+<!-- CHARLA 3: INECUACIONES -->
+<!-- ============================================================ -->
+<section class="charla" id="charla3">
+  <div class="charla-header">
+    <div class="charla-num">3</div>
+    <h2>Inecuaciones</h2>
+  </div>
+
+  <!-- TEORIA -->
+  <div class="teoria">
+    <h3>Conceptos Fundamentales</h3>
+    <p>Una <strong>inecuación</strong> es una desigualdad que contiene una o más variables. El objetivo es hallar el conjunto de valores que la satisfacen.</p>
+    <p><strong>Reglas esenciales:</strong></p>
+    <ul>
+      <li>Al multiplicar o dividir por un número <strong>negativo</strong>, se <strong>invierte</strong> el signo de desigualdad.</li>
+      <li>Los intervalos se expresan con paréntesis $(a,b)$ (abiertos) o corchetes $[a,b]$ (cerrados).</li>
+      <li>Se usa <strong>línea de signos</strong> para determinar dónde la expresión es positiva o negativa.</li>
+    </ul>
+  </div>
+
+  <!-- 3.1 INECUACIONES LINEALES -->
+  <div class="subtema">
+    <h3>3.1 — Inecuaciones Lineales</h3>
+    <div class="formula">
+      Se resuelven igual que una ecuación lineal, pero al multiplicar/dividir por negativo se invierte la desigualdad.
+    </div>
+
+    <div class="ejemplo">
+      <div class="ejemplo-header" onclick="toggleEjemplo(this)">
+        Ejemplo Resuelto: $\;3x - 7 \leq 2x + 5$
+      </div>
+      <div class="ejemplo-body">
+        <div class="paso">
+          <div class="paso-label">Paso 1 — Agrupar variables</div>
+          $3x - 2x \leq 5 + 7$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 2 — Simplificar</div>
+          $x \leq 12$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 3 — Solución en intervalo</div>
+          $$\boxed{x \in (-\infty, 12]}$$
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3.2 INECUACIONES CUADRÁTICAS -->
+  <div class="subtema">
+    <h3>3.2 — Inecuaciones Cuadráticas</h3>
+    <div class="teoria">
+      <h3>Método de la Línea de Signos</h3>
+      <ol>
+        <li>Pasar todo a un lado: $ax^2 + bx + c \;\square\; 0$</li>
+        <li>Factorizar (o usar fórmula general para hallar las raíces)</li>
+        <li>Ubicar las raíces en la recta numérica</li>
+        <li>Evaluar el signo en cada intervalo</li>
+        <li>Elegir los intervalos según el signo de la desigualdad</li>
+      </ol>
+    </div>
+
+    <div class="ejemplo">
+      <div class="ejemplo-header" onclick="toggleEjemplo(this)">
+        Ejemplo Resuelto: $\;x^2 - 5x + 6 > 0$
+      </div>
+      <div class="ejemplo-body">
+        <div class="paso">
+          <div class="paso-label">Paso 1 — Factorizar</div>
+          $(x-2)(x-3) > 0$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 2 — Raíces críticas</div>
+          $x = 2$ y $x = 3$. Estos dividen la recta en: $(-\infty, 2)$, $(2,3)$, $(3, +\infty)$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 3 — Evaluar signos</div>
+          <p>Tomamos un valor de prueba en cada intervalo:</p>
+          <p>$x=0$: $(0-2)(0-3) = (-2)(-3) = 6 > 0$ ✅</p>
+          <p>$x=2.5$: $(0.5)(-0.5) = -0.25 < 0$ ❌</p>
+          <p>$x=4$: $(2)(1) = 2 > 0$ ✅</p>
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 4 — Solución</div>
+          $$\boxed{x \in (-\infty, 2) \cup (3, +\infty)}$$
+        </div>
+      </div>
+    </div>
+
+    <div class="root-alert">
+      <h4>Cuando la cuadrática NO factoriza fácil (raíces irracionales)</h4>
+      <p>Si el discriminante no es cuadrado perfecto, las raíces serán con $\sqrt{}$. Se usa la <strong>fórmula general</strong>:</p>
+      $$x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$$
+      <p>Las raíces se ubican igual en la línea de signos. No te asustes: el procedimiento es idéntico.</p>
+    </div>
+
+    <div class="ejemplo">
+      <div class="ejemplo-header" onclick="toggleEjemplo(this)">
+        🔴 Ejemplo con Raíces: $\;x^2 - 4x + 1 \leq 0$
+      </div>
+      <div class="ejemplo-body">
+        <div class="paso root-step">
+          <div class="paso-label">Paso 1 — No factoriza, usar fórmula general</div>
+          $a=1, \; b=-4, \; c=1$
+          $$x = \frac{4 \pm \sqrt{16 - 4}}{2} = \frac{4 \pm \sqrt{12}}{2} = \frac{4 \pm 2\sqrt{3}}{2} = 2 \pm \sqrt{3}$$
+        </div>
+        <div class="paso root-step">
+          <div class="paso-label">Paso 2 — Valores aproximados de las raíces</div>
+          <p>$\sqrt{3} \approx 1.73$</p>
+          <p>$x_1 = 2 - \sqrt{3} \approx 0.27$</p>
+          <p>$x_2 = 2 + \sqrt{3} \approx 3.73$</p>
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 3 — Línea de signos</div>
+          <p>Intervalos: $(-\infty, 2-\sqrt{3})$, $(2-\sqrt{3}, 2+\sqrt{3})$, $(2+\sqrt{3}, +\infty)$</p>
+          <p>Como $a > 0$, la parábola abre hacia arriba → es negativa (≤ 0) ENTRE las raíces.</p>
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 4 — Solución</div>
+          $$\boxed{x \in [2 - \sqrt{3},\; 2 + \sqrt{3}]}$$
+          <p>Incluimos los extremos porque la desigualdad es $\leq$.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3.3 INECUACIONES CON VALOR ABSOLUTO -->
+  <div class="subtema">
+    <h3>3.3 — Inecuaciones con Valor Absoluto</h3>
+    <div class="formula">
+      <p><strong>Caso 1:</strong> $|f(x)| < a \implies -a < f(x) < a$</p>
+      <p><strong>Caso 2:</strong> $|f(x)| > a \implies f(x) < -a \;\text{ ó }\; f(x) > a$</p>
+      <p>Mismo criterio para $\leq$ y $\geq$ (con extremos cerrados).</p>
+    </div>
+
+    <div class="ejemplo">
+      <div class="ejemplo-header" onclick="toggleEjemplo(this)">
+        Ejemplo Resuelto: $\;|2x - 3| < 5$
+      </div>
+      <div class="ejemplo-body">
+        <div class="paso">
+          <div class="paso-label">Paso 1 — Aplicar definición (Caso 1)</div>
+          $-5 < 2x - 3 < 5$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 2 — Sumar 3 a todos los lados</div>
+          $-2 < 2x < 8$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 3 — Dividir por 2</div>
+          $$\boxed{x \in (-1, 4)}$$
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3.4 INECUACIONES CON RAÍCES -->
+  <div class="subtema">
+    <h3>3.4 — Inecuaciones con Raíces (⚠️ Favoritas del Profesor)</h3>
+
+    <div class="root-alert">
+      <h4>Claves para resolver inecuaciones con raíces cuadradas</h4>
+      <p><strong>Regla fundamental:</strong> $\sqrt{f(x)}$ solo existe si $f(x) \geq 0$ → siempre hallar primero el <strong>dominio</strong>.</p>
+      <p><strong>Propiedad:</strong> Si $a \geq 0$ y $b \geq 0$, entonces $\sqrt{a} \leq \sqrt{b} \iff a \leq b$ (la raíz conserva el orden en no-negativos).</p>
+      <p><strong>Cuidado:</strong> Al elevar al cuadrado ambos lados, <strong>ambos deben ser no-negativos</strong>. Siempre verificar las condiciones.</p>
+    </div>
+
+    <div class="ejemplo">
+      <div class="ejemplo-header" onclick="toggleEjemplo(this)">
+        🔴 Ejemplo: $\;\sqrt{x - 1} \leq 3$
+      </div>
+      <div class="ejemplo-body">
+        <div class="paso root-step">
+          <div class="paso-label">Paso 1 — Dominio</div>
+          Para que $\sqrt{x-1}$ exista: $x - 1 \geq 0 \implies x \geq 1$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 2 — La raíz siempre es ≥ 0, y 3 > 0, podemos elevar al cuadrado</div>
+          $x - 1 \leq 9 \implies x \leq 10$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 3 — Intersectar con el dominio</div>
+          Dominio: $x \geq 1$ y solución: $x \leq 10$
+          $$\boxed{x \in [1, 10]}$$
+        </div>
+      </div>
+    </div>
+
+    <div class="ejemplo">
+      <div class="ejemplo-header" onclick="toggleEjemplo(this)">
+        🔴 Ejemplo: $\;\sqrt{2x + 3} > x + 1$
+      </div>
+      <div class="ejemplo-body">
+        <div class="paso root-step">
+          <div class="paso-label">Paso 1 — Dominio de la raíz</div>
+          $2x + 3 \geq 0 \implies x \geq -\frac{3}{2}$
+        </div>
+        <div class="paso root-step">
+          <div class="paso-label">Paso 2 — Analizar casos para elevar al cuadrado</div>
+          <p><strong>Caso A:</strong> Si $x + 1 < 0$ (es decir $x < -1$): el lado derecho es negativo y la raíz es $\geq 0$, entonces la desigualdad se cumple automáticamente → solución parcial: $-\frac{3}{2} \leq x < -1$</p>
+          <p><strong>Caso B:</strong> Si $x + 1 \geq 0$ (es decir $x \geq -1$): ambos lados $\geq 0$, podemos elevar al cuadrado.</p>
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 3 — Elevar al cuadrado (Caso B)</div>
+          $2x + 3 > (x+1)^2$<br>
+          $2x + 3 > x^2 + 2x + 1$<br>
+          $0 > x^2 - 2$<br>
+          $x^2 < 2$<br>
+          $-\sqrt{2} < x < \sqrt{2}$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 4 — Intersectar Caso B con su condición</div>
+          $x \geq -1$ y $-\sqrt{2} < x < \sqrt{2}$: como $-1 > -\sqrt{2}$, queda $-1 \leq x < \sqrt{2}$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 5 — Unir ambos casos</div>
+          Caso A: $[-\frac{3}{2}, -1)$ ∪ Caso B: $[-1, \sqrt{2})$
+          $$\boxed{x \in \left[-\frac{3}{2},\; \sqrt{2}\right)}$$
+        </div>
+      </div>
+    </div>
+
+    <div class="ejemplo">
+      <div class="ejemplo-header" onclick="toggleEjemplo(this)">
+        🔴 Ejemplo: $\;\sqrt{x+5} - \sqrt{x-3} \geq 2$
+      </div>
+      <div class="ejemplo-body">
+        <div class="paso root-step">
+          <div class="paso-label">Paso 1 — Dominio</div>
+          $x + 5 \geq 0 \implies x \geq -5$ y $x - 3 \geq 0 \implies x \geq 3$. Dominio: $x \geq 3$
+        </div>
+        <div class="paso root-step">
+          <div class="paso-label">Paso 2 — Aislar una raíz</div>
+          $\sqrt{x+5} \geq 2 + \sqrt{x-3}$. Ambos lados son $\geq 0$ (para $x \geq 3$), podemos elevar al cuadrado.
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 3 — Elevar al cuadrado</div>
+          $x + 5 \geq 4 + 4\sqrt{x-3} + (x-3)$<br>
+          $x + 5 \geq x + 1 + 4\sqrt{x-3}$<br>
+          $4 \geq 4\sqrt{x-3}$<br>
+          $1 \geq \sqrt{x-3}$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 4 — Elevar al cuadrado de nuevo</div>
+          $1 \geq x - 3 \implies x \leq 4$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 5 — Intersectar con dominio</div>
+          $x \geq 3$ y $x \leq 4$
+          $$\boxed{x \in [3, 4]}$$
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3.5 INECUACIONES RACIONALES -->
+  <div class="subtema">
+    <h3>3.5 — Inecuaciones Racionales</h3>
+    <div class="formula">
+      <p>Para $\frac{f(x)}{g(x)} \;\square\; 0$: hallar los ceros de $f(x)$ y $g(x)$, luego línea de signos.</p>
+      <p><strong>Nunca</strong> multiplicar cruzado sin saber el signo del denominador. Mejor: pasar todo a un lado y analizar signos.</p>
+    </div>
+
+    <div class="ejemplo">
+      <div class="ejemplo-header" onclick="toggleEjemplo(this)">
+        Ejemplo Resuelto: $\;\dfrac{x-2}{x+3} \geq 0$
+      </div>
+      <div class="ejemplo-body">
+        <div class="paso">
+          <div class="paso-label">Paso 1 — Puntos críticos</div>
+          Numerador = 0: $x = 2$. Denominador = 0: $x = -3$ (excluido del dominio).
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 2 — Intervalos y signos</div>
+          <p>$(-\infty, -3)$: prueba $x=-4$: $\frac{-6}{-1} = 6 > 0$ ✅</p>
+          <p>$(-3, 2)$: prueba $x=0$: $\frac{-2}{3} < 0$ ❌</p>
+          <p>$(2, +\infty)$: prueba $x=3$: $\frac{1}{6} > 0$ ✅</p>
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 3 — Solución</div>
+          $$\boxed{x \in (-\infty, -3) \cup [2, +\infty)}$$
+          <p>$x=2$ se incluye ($\geq$), $x=-3$ se excluye (denominador = 0).</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRACTICA INECUACIONES -->
+  <div class="practica">
+    <h3>Ejercicios de Práctica — Inecuaciones</h3>
+    <ol>
+      <li>$x^2 - 7x + 10 > 0$</li>
+      <li>$2x^2 + x - 6 \leq 0$</li>
+      <li>$|3x + 1| \geq 7$</li>
+      <li>$\dfrac{x+1}{x-4} < 0$</li>
+      <li class="root-ex">$\sqrt{3x - 2} < 4$</li>
+      <li class="root-ex">$\sqrt{x+4} > x - 2$</li>
+      <li class="root-ex">$x^2 - 6x + 2 \leq 0$ (raíces con $\sqrt{}$)</li>
+      <li class="root-ex">$\sqrt{x+3} + \sqrt{x-1} \leq 4$</li>
+      <li class="root-ex">$\dfrac{\sqrt{x-1}}{x-3} \geq 0$</li>
+      <li class="root-ex">$\sqrt{x^2 - 9} \leq x - 1$</li>
+    </ol>
+
+    <div class="respuestas">
+      <div class="resp-toggle" onclick="toggleResp(this)">▶ Ver Respuestas Detalladas</div>
+      <div class="resp-content">
+
+        <div class="solucion">
+          <div class="solucion-title">1) $x^2 - 7x + 10 > 0$</div>
+          <div class="paso">
+            <div class="paso-label">Factorizar — buscar dos números que multipliquen 10 y sumen -7</div>
+            $(x - 2)(x - 5) > 0$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Raíces críticas — igualar cada factor a cero</div>
+            $x = 2$ y $x = 5$. Dividen la recta en: $(-\infty, 2)$, $(2, 5)$, $(5, +\infty)$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Línea de signos — evaluar un punto de cada intervalo</div>
+            $x=0$: $(-2)(-5)=10 > 0$ ✅ · $x=3$: $(1)(-2)=-2 < 0$ ❌ · $x=6$: $(4)(1)=4 > 0$ ✅
+          </div>
+          <div class="resultado">$$x \in (-\infty, 2) \cup (5, +\infty)$$</div>
+        </div>
+
+        <div class="solucion">
+          <div class="solucion-title">2) $2x^2 + x - 6 \leq 0$</div>
+          <div class="paso">
+            <div class="paso-label">Factorizar — buscar factores de $2x^2+x-6$</div>
+            $(2x - 3)(x + 2) \leq 0$. Verificación: $2x^2+4x-3x-6 = 2x^2+x-6$ ✓
+          </div>
+          <div class="paso">
+            <div class="paso-label">Raíces críticas</div>
+            $2x-3=0 \Rightarrow x=\frac{3}{2}$ y $x+2=0 \Rightarrow x=-2$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Línea de signos — parábola abre hacia arriba ($a=2>0$), negativa ENTRE las raíces</div>
+            $x=-3$: $(-9)(-1)=9>0$ ❌ · $x=0$: $(-3)(2)=-6<0$ ✅ · $x=2$: $(1)(4)=4>0$ ❌
+          </div>
+          <div class="resultado">$$x \in \left[-2,\; \frac{3}{2}\right]$$
+          Incluimos extremos porque es $\leq$</div>
+        </div>
+
+        <div class="solucion">
+          <div class="solucion-title">3) $|3x + 1| \geq 7$</div>
+          <div class="paso">
+            <div class="paso-label">Aplicar definición de valor absoluto — Caso $|f(x)| \geq a$ se abre en dos</div>
+            $3x + 1 \geq 7$ ó $3x + 1 \leq -7$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Resolver cada desigualdad por separado</div>
+            Caso 1: $3x \geq 6 \Rightarrow x \geq 2$<br>
+            Caso 2: $3x \leq -8 \Rightarrow x \leq -\frac{8}{3}$
+          </div>
+          <div class="resultado">$$x \in \left(-\infty, -\frac{8}{3}\right] \cup [2, +\infty)$$</div>
+        </div>
+
+        <div class="solucion">
+          <div class="solucion-title">4) $\dfrac{x+1}{x-4} < 0$</div>
+          <div class="paso">
+            <div class="paso-label">Puntos críticos — ceros del numerador y denominador</div>
+            Numerador: $x+1=0 \Rightarrow x=-1$. Denominador: $x-4=0 \Rightarrow x=4$ (excluido)
+          </div>
+          <div class="paso">
+            <div class="paso-label">Línea de signos — evaluar en cada intervalo</div>
+            $x=-2$: $\frac{-1}{-6}=\frac{1}{6}>0$ ❌ · $x=0$: $\frac{1}{-4}<0$ ✅ · $x=5$: $\frac{6}{1}>0$ ❌
+          </div>
+          <div class="resultado">$$x \in (-1, 4)$$
+          Abierto en ambos: $x=-1$ da 0 (no $< 0$), $x=4$ no existe</div>
+        </div>
+
+        <div class="solucion">
+          <div class="solucion-title">🔴 5) $\sqrt{3x - 2} < 4$</div>
+          <div class="paso root-step">
+            <div class="paso-label">Dominio — la expresión bajo la raíz debe ser $\geq 0$</div>
+            $3x - 2 \geq 0 \Rightarrow x \geq \frac{2}{3}$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Elevar al cuadrado — ambos lados son no-negativos ($\sqrt{}\geq 0$ y $4>0$)</div>
+            $3x - 2 < 16 \Rightarrow 3x < 18 \Rightarrow x < 6$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Intersectar con el dominio</div>
+            $x \geq \frac{2}{3}$ y $x < 6$
+          </div>
+          <div class="resultado">$$x \in \left[\frac{2}{3},\; 6\right)$$
+          Cerrado en $\frac{2}{3}$ (pertenece al dominio), abierto en 6 (desigualdad estricta)</div>
+        </div>
+
+        <div class="solucion">
+          <div class="solucion-title">🔴 6) $\sqrt{x+4} > x - 2$</div>
+          <div class="paso root-step">
+            <div class="paso-label">Dominio de la raíz</div>
+            $x + 4 \geq 0 \Rightarrow x \geq -4$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Caso A — si el lado derecho es negativo ($x - 2 < 0$, es decir $x < 2$)</div>
+            La raíz siempre es $\geq 0 >$ negativo, así que la desigualdad se cumple automáticamente.<br>
+            Solución parcial: $x \in [-4, 2)$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Caso B — si $x - 2 \geq 0$ ($x \geq 2$), ambos lados $\geq 0$, podemos elevar al cuadrado</div>
+            $x + 4 > (x-2)^2 = x^2 - 4x + 4$<br>
+            $0 > x^2 - 5x \Rightarrow x^2 - 5x < 0 \Rightarrow x(x-5) < 0$<br>
+            Línea de signos: $0 < x < 5$. Intersectando con $x \geq 2$: $x \in [2, 5)$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Unir ambos casos</div>
+            Caso A: $[-4, 2)$ ∪ Caso B: $[2, 5)$
+          </div>
+          <div class="resultado">$$x \in [-4,\; 5)$$</div>
+        </div>
+
+        <div class="solucion">
+          <div class="solucion-title">🔴 7) $x^2 - 6x + 2 \leq 0$ (raíces con $\sqrt{}$)</div>
+          <div class="paso root-step">
+            <div class="paso-label">No factoriza fácil — usar fórmula general $x = \frac{-b \pm \sqrt{b^2-4ac}}{2a}$</div>
+            $a=1,\; b=-6,\; c=2$<br>
+            $\Delta = 36 - 8 = 28$<br>
+            $x = \frac{6 \pm \sqrt{28}}{2} = \frac{6 \pm 2\sqrt{7}}{2} = 3 \pm \sqrt{7}$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Valores aproximados (para ubicar en la recta)</div>
+            $\sqrt{7} \approx 2.65$, así $x_1 \approx 0.35$ y $x_2 \approx 5.65$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Línea de signos — $a=1>0$, parábola abre arriba → negativa ENTRE raíces</div>
+          </div>
+          <div class="resultado">$$x \in [3 - \sqrt{7},\; 3 + \sqrt{7}]$$
+          Extremos incluidos porque es $\leq$</div>
+        </div>
+
+        <div class="solucion">
+          <div class="solucion-title">🔴 8) $\sqrt{x+3} + \sqrt{x-1} \leq 4$</div>
+          <div class="paso root-step">
+            <div class="paso-label">Dominio — ambas raíces deben existir</div>
+            $x + 3 \geq 0 \Rightarrow x \geq -3$ y $x - 1 \geq 0 \Rightarrow x \geq 1$. Dominio: $x \geq 1$
+          </div>
+          <div class="paso root-step">
+            <div class="paso-label">Aislar una raíz para poder elevar al cuadrado</div>
+            $\sqrt{x+3} \leq 4 - \sqrt{x-1}$<br>
+            Necesitamos que el lado derecho sea $\geq 0$: $4 - \sqrt{x-1} \geq 0 \Rightarrow \sqrt{x-1} \leq 4 \Rightarrow x \leq 17$ ✓
+          </div>
+          <div class="paso">
+            <div class="paso-label">Elevar al cuadrado (ambos lados $\geq 0$)</div>
+            $x + 3 \leq 16 - 8\sqrt{x-1} + (x-1)$<br>
+            $x + 3 \leq x + 15 - 8\sqrt{x-1}$<br>
+            $-12 \leq -8\sqrt{x-1}$<br>
+            $8\sqrt{x-1} \leq 12 \Rightarrow \sqrt{x-1} \leq \frac{3}{2}$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Elevar al cuadrado de nuevo</div>
+            $x - 1 \leq \frac{9}{4} \Rightarrow x \leq \frac{13}{4}$
+          </div>
+          <div class="resultado">$$x \in \left[1,\; \frac{13}{4}\right]$$
+          Intersectando $x \geq 1$ con $x \leq \frac{13}{4} = 3.25$</div>
+        </div>
+
+        <div class="solucion">
+          <div class="solucion-title">🔴 9) $\dfrac{\sqrt{x-1}}{x-3} \geq 0$</div>
+          <div class="paso root-step">
+            <div class="paso-label">Dominio — raíz debe existir y denominador $\neq 0$</div>
+            $x - 1 \geq 0 \Rightarrow x \geq 1$ y $x \neq 3$. Dominio: $[1, 3) \cup (3, +\infty)$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Análisis de signos — el numerador $\sqrt{x-1} \geq 0$ siempre</div>
+            Numerador $= 0$ cuando $x = 1$ (incluido, $\geq$). Numerador $> 0$ para $x > 1$.<br>
+            Para la fracción $\geq 0$, necesitamos denominador $> 0$ (o numerador $= 0$).<br>
+            $x - 3 > 0 \Rightarrow x > 3$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Unir: $x = 1$ (numerador es 0) y $x > 3$ (ambos positivos)</div>
+          </div>
+          <div class="resultado">$$x \in \{1\} \cup (3, +\infty)$$</div>
+        </div>
+
+        <div class="solucion">
+          <div class="solucion-title">🔴 10) $\sqrt{x^2 - 9} \leq x - 1$</div>
+          <div class="paso root-step">
+            <div class="paso-label">Dominio de la raíz</div>
+            $x^2 - 9 \geq 0 \Rightarrow (x-3)(x+3) \geq 0 \Rightarrow x \leq -3$ ó $x \geq 3$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Condición para elevar al cuadrado — el lado derecho debe ser $\geq 0$</div>
+            $x - 1 \geq 0 \Rightarrow x \geq 1$. Combinado con el dominio: $x \geq 3$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Elevar al cuadrado (ambos lados $\geq 0$ para $x \geq 3$)</div>
+            $x^2 - 9 \leq (x-1)^2 = x^2 - 2x + 1$<br>
+            $-9 \leq -2x + 1$<br>
+            $2x \leq 10 \Rightarrow x \leq 5$
+          </div>
+          <div class="resultado">$$x \in [3,\; 5]$$
+          Intersección de $x \geq 3$ con $x \leq 5$. Verificar: $x=3$: $\sqrt{0} \leq 2$ ✅. $x=5$: $\sqrt{16}=4 \leq 4$ ✅</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- CHARLA 4: FUNCIONES -->
+<!-- ============================================================ -->
+<section class="charla" id="charla4">
+  <div class="charla-header">
+    <div class="charla-num">4</div>
+    <h2>Funciones</h2>
+  </div>
+
+  <!-- 4.1 EVALUACIÓN -->
+  <div class="subtema">
+    <h3>4.1 — Evaluación de Funciones</h3>
+    <div class="teoria">
+      <h3>Concepto</h3>
+      <p>Evaluar $f(a)$ significa reemplazar <strong>toda $x$</strong> por $a$ en la expresión de $f(x)$.</p>
+      <p><strong>Con expresiones compuestas:</strong> si te piden $f(x+h)$, reemplaza $x$ por $(x+h)$ y expande con cuidado.</p>
+    </div>
+
+    <div class="ejemplo">
+      <div class="ejemplo-header" onclick="toggleEjemplo(this)">
+        🔴 Ejemplo con Raíces: $f(x) = \sqrt{3x+1}$, hallar $f(5)$ y $f(x^2-1)$
+      </div>
+      <div class="ejemplo-body">
+        <div class="paso">
+          <div class="paso-label">f(5)</div>
+          $f(5) = \sqrt{3(5)+1} = \sqrt{16} = 4$
+        </div>
+        <div class="paso root-step">
+          <div class="paso-label">f(x²−1) — Reemplazar x por (x²−1)</div>
+          $f(x^2-1) = \sqrt{3(x^2-1)+1} = \sqrt{3x^2 - 3 + 1} = \sqrt{3x^2 - 2}$
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4.2 DOMINIO Y RANGO -->
+  <div class="subtema">
+    <h3>4.2 — Dominio y Rango (⚠️ Clave con Raíces)</h3>
+
+    <div class="root-alert">
+      <h4>Dominio con raíces cuadradas</h4>
+      <p>Para $f(x) = \sqrt{g(x)}$, el dominio requiere que $g(x) \geq 0$. Resolver esa inecuación da el dominio.</p>
+      <p>Para $f(x) = \dfrac{1}{\sqrt{g(x)}}$, necesitamos $g(x) > 0$ (estrictamente, porque está en el denominador).</p>
+    </div>
+
+    <div class="teoria">
+      <h3>Resumen de Dominios</h3>
+      <ul>
+        <li><strong>Polinomio:</strong> $\text{Dom} = \mathbb{R}$</li>
+        <li><strong>Racional $\frac{p(x)}{q(x)}$:</strong> $\text{Dom} = \mathbb{R} - \{x : q(x) = 0\}$</li>
+        <li><strong>Raíz par $\sqrt[2n]{g(x)}$:</strong> $\text{Dom}: g(x) \geq 0$</li>
+        <li><strong>Raíz impar $\sqrt[2n+1]{g(x)}$:</strong> $\text{Dom} = \mathbb{R}$</li>
+        <li><strong>Combinación:</strong> se intersectan las condiciones</li>
+      </ul>
+    </div>
+
+    <div class="ejemplo">
+      <div class="ejemplo-header" onclick="toggleEjemplo(this)">
+        🔴 Ejemplo: Dominio y Rango de $f(x) = \sqrt{x^2 - 4x + 3}$
+      </div>
+      <div class="ejemplo-body">
+        <div class="paso root-step">
+          <div class="paso-label">Paso 1 — Condición del dominio</div>
+          $x^2 - 4x + 3 \geq 0$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 2 — Factorizar</div>
+          $(x-1)(x-3) \geq 0$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 3 — Línea de signos</div>
+          Raíces: $x=1$, $x=3$. La parábola abre hacia arriba, es $\geq 0$ fuera de las raíces.
+          $$\text{Dom}(f) = (-\infty, 1] \cup [3, +\infty)$$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 4 — Rango</div>
+          La raíz cuadrada siempre produce valores $\geq 0$, y como la expresión interior puede crecer sin límite:
+          $$\text{Ran}(f) = [0, +\infty)$$
+        </div>
+      </div>
+    </div>
+
+    <div class="ejemplo">
+      <div class="ejemplo-header" onclick="toggleEjemplo(this)">
+        🔴 Ejemplo: Dominio de $f(x) = \dfrac{\sqrt{x+2}}{x^2 - 9}$
+      </div>
+      <div class="ejemplo-body">
+        <div class="paso root-step">
+          <div class="paso-label">Paso 1 — Condición de la raíz</div>
+          $x + 2 \geq 0 \implies x \geq -2$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 2 — Condición del denominador</div>
+          $x^2 - 9 \neq 0 \implies x \neq \pm 3$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 3 — Intersectar condiciones</div>
+          $x \geq -2$ y $x \neq 3$ (el $x \neq -3$ ya se cumple pues $-3 < -2$)
+          $$\boxed{\text{Dom}(f) = [-2, 3) \cup (3, +\infty)}$$
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4.3 FUNCIÓN LINEAL Y PARÁBOLA -->
+  <div class="subtema">
+    <h3>4.3 — Función Lineal</h3>
+    <div class="formula">
+      $y = mx + b$ donde $m$ = pendiente y $b$ = intercepto en $y$.<br>
+      Dominio: $\mathbb{R}$. Rango: $\mathbb{R}$ (excepto si $m=0$, entonces Rango $= \{b\}$).<br>
+      Para graficar: hallar interceptos ($x=0$ y $y=0$) y unir con una recta.
+    </div>
+  </div>
+
+  <div class="subtema">
+    <h3>4.4 — Función Cuadrática (Parábola)</h3>
+    <div class="teoria">
+      <h3>Elementos de la Parábola $y = ax^2 + bx + c$</h3>
+      <ul>
+        <li><strong>Vértice:</strong> $V = \left(\dfrac{-b}{2a},\; f\!\left(\dfrac{-b}{2a}\right)\right)$</li>
+        <li><strong>Abre hacia arriba</strong> si $a > 0$ (vértice es mínimo), <strong>hacia abajo</strong> si $a < 0$ (vértice es máximo)</li>
+        <li><strong>Raíces:</strong> $x = \dfrac{-b \pm \sqrt{b^2 - 4ac}}{2a}$</li>
+        <li><strong>Discriminante $\Delta = b^2 - 4ac$:</strong> si $\Delta > 0$ → 2 raíces reales; $\Delta = 0$ → 1 raíz (doble); $\Delta < 0$ → no hay raíces reales</li>
+        <li><strong>Dominio:</strong> $\mathbb{R}$ siempre</li>
+        <li><strong>Rango:</strong> $[y_v, +\infty)$ si $a > 0$; $(-\infty, y_v]$ si $a < 0$ (donde $y_v$ es la ordenada del vértice)</li>
+      </ul>
+    </div>
+
+    <div class="ejemplo">
+      <div class="ejemplo-header" onclick="toggleEjemplo(this)">
+        Ejemplo: Vértice, raíces, dominio y rango de $y = 2x^2 - 8x + 6$
+      </div>
+      <div class="ejemplo-body">
+        <div class="paso">
+          <div class="paso-label">Vértice</div>
+          $x_v = \frac{-(-8)}{2(2)} = \frac{8}{4} = 2$. Luego $y_v = 2(4) - 8(2) + 6 = 8 - 16 + 6 = -2$.<br>
+          $V = (2, -2)$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Raíces</div>
+          $x = \frac{8 \pm \sqrt{64-48}}{4} = \frac{8 \pm \sqrt{16}}{4} = \frac{8 \pm 4}{4}$<br>
+          $x_1 = 1, \; x_2 = 3$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Dom y Ran</div>
+          Dom $= \mathbb{R}$. Como $a=2 > 0$: Ran $= [-2, +\infty)$
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4.5 OPERACIONES CON FUNCIONES -->
+  <div class="subtema">
+    <h3>4.5 — Operaciones con Funciones</h3>
+    <div class="formula">
+      <p>$(f+g)(x) = f(x) + g(x)$, Dom $= D_f \cap D_g$</p>
+      <p>$(f-g)(x) = f(x) - g(x)$</p>
+      <p>$(f \cdot g)(x) = f(x) \cdot g(x)$</p>
+      <p>$\left(\dfrac{f}{g}\right)(x) = \dfrac{f(x)}{g(x)}$, Dom $= D_f \cap D_g - \{x : g(x) = 0\}$</p>
+    </div>
+
+    <div class="ejemplo">
+      <div class="ejemplo-header" onclick="toggleEjemplo(this)">
+        🔴 Ejemplo: $f(x) = \sqrt{x+2}$, $g(x) = \dfrac{3}{x-2}$. Hallar $(f+g)(x)$ y su dominio.
+      </div>
+      <div class="ejemplo-body">
+        <div class="paso root-step">
+          <div class="paso-label">Dominio de f</div>
+          $x + 2 \geq 0 \implies x \geq -2 \implies D_f = [-2, +\infty)$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Dominio de g</div>
+          $x - 2 \neq 0 \implies x \neq 2 \implies D_g = \mathbb{R} - \{2\}$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Resultado</div>
+          $(f+g)(x) = \sqrt{x+2} + \dfrac{3}{x-2}$<br>
+          Dom $= D_f \cap D_g = [-2, 2) \cup (2, +\infty)$
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4.6 FUNCIÓN INVERSA -->
+  <div class="subtema">
+    <h3>4.6 — Función Inversa</h3>
+    <div class="teoria">
+      <h3>Pasos para hallar $f^{-1}(x)$</h3>
+      <ol>
+        <li>Verificar inyectividad: $f(x_1) = f(x_2) \implies x_1 = x_2$</li>
+        <li>Escribir $y = f(x)$</li>
+        <li>Intercambiar $x$ e $y$</li>
+        <li>Despejar $y$ → esa es $f^{-1}(x)$</li>
+      </ol>
+    </div>
+
+    <div class="ejemplo">
+      <div class="ejemplo-header" onclick="toggleEjemplo(this)">
+        🔴 Ejemplo: Inversa de $f(x) = \sqrt{x + 2}$
+      </div>
+      <div class="ejemplo-body">
+        <div class="paso">
+          <div class="paso-label">Paso 1 — Inyectividad</div>
+          $\sqrt{x_1+2} = \sqrt{x_2+2} \implies x_1 + 2 = x_2 + 2 \implies x_1 = x_2$ ✅
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 2 — Intercambiar</div>
+          $y = \sqrt{x+2} \longrightarrow x = \sqrt{y+2}$
+        </div>
+        <div class="paso root-step">
+          <div class="paso-label">Paso 3 — Despejar y (elevar al cuadrado)</div>
+          $x^2 = y + 2 \implies y = x^2 - 2$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Resultado</div>
+          $$f^{-1}(x) = x^2 - 2, \quad x \geq 0$$
+          <p>(La restricción $x \geq 0$ viene del rango de $f$, que es $[0, +\infty)$)</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4.7 FUNCIÓN COMPUESTA -->
+  <div class="subtema">
+    <h3>4.7 — Función Compuesta</h3>
+    <div class="formula">
+      $(f \circ g)(x) = f(g(x))$: primero evalúa $g(x)$, luego ese resultado entra en $f$.
+    </div>
+
+    <div class="ejemplo">
+      <div class="ejemplo-header" onclick="toggleEjemplo(this)">
+        🔴 Ejemplo: $f(x) = \sqrt{2x+3}$, $g(x) = \dfrac{2x}{x-4}$. Hallar $(f \circ g)(x)$
+      </div>
+      <div class="ejemplo-body">
+        <div class="paso">
+          <div class="paso-label">Paso 1 — Sustituir g(x) en f</div>
+          $f(g(x)) = \sqrt{2 \cdot \frac{2x}{x-4} + 3}$
+        </div>
+        <div class="paso root-step">
+          <div class="paso-label">Paso 2 — Simplificar bajo la raíz</div>
+          $= \sqrt{\frac{4x}{x-4} + 3} = \sqrt{\frac{4x + 3(x-4)}{x-4}} = \sqrt{\frac{7x - 12}{x-4}}$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 3 — Dominio</div>
+          Necesitamos $\frac{7x-12}{x-4} \geq 0$ y $x \neq 4$. Usando línea de signos con las raíces $x = \frac{12}{7}$ y $x = 4$:
+          $$\text{Dom} = \left[\frac{12}{7}, 4\right)$$
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4.8 FUNCIONES RACIONALES -->
+  <div class="subtema">
+    <h3>4.8 — Funciones Racionales y Asíntotas</h3>
+    <div class="teoria">
+      <h3>Asíntotas</h3>
+      <p><strong>Asíntota Vertical (AV):</strong> Donde el denominador = 0 (y el numerador ≠ 0).</p>
+      <p><strong>Asíntota Horizontal (AH):</strong></p>
+      <ul>
+        <li>Grado Num = Grado Den → $y = \dfrac{\text{coef. principal num.}}{\text{coef. principal den.}}$</li>
+        <li>Grado Num < Grado Den → $y = 0$</li>
+        <li>Grado Num > Grado Den → No hay AH (puede haber oblicua si la diferencia es 1)</li>
+      </ul>
+      <p><strong>Dominio:</strong> $\mathbb{R}$ menos las AV. <strong>Rango:</strong> $\mathbb{R}$ menos la AH (verificar siempre).</p>
+    </div>
+  </div>
+
+  <!-- PRACTICA FUNCIONES -->
+  <div class="practica">
+    <h3>Ejercicios de Práctica — Funciones</h3>
+    <ol>
+      <li class="root-ex">Hallar el dominio de $f(x) = \sqrt{x^2 - 2x - 8}$</li>
+      <li class="root-ex">Hallar el dominio de $f(x) = \dfrac{1}{\sqrt{4 - x^2}}$</li>
+      <li class="root-ex">Si $f(x) = \sqrt{x-1}$ y $g(x) = x^2 + 3$, hallar $(g \circ f)(x)$ y su dominio</li>
+      <li>Hallar la inversa de $f(x) = \dfrac{3x-2}{x+3}$</li>
+      <li class="root-ex">Hallar la inversa de $f(x) = x^3 + 2$ (involucra $\sqrt[3]{}$)</li>
+      <li>Hallar vértice, raíces, dominio y rango de $y = -x^2 + 4x - 1$</li>
+      <li class="root-ex">Hallar el dominio y rango de $f(x) = 3 - \sqrt{2x - 6}$</li>
+      <li>Hallar las asíntotas de $y = \dfrac{x^2-3x-4}{2x^2+4x}$</li>
+    </ol>
+
+    <div class="respuestas">
+      <div class="resp-toggle" onclick="toggleResp(this)">▶ Ver Respuestas Detalladas</div>
+      <div class="resp-content">
+
+        <div class="solucion">
+          <div class="solucion-title">🔴 1) Dominio de $f(x) = \sqrt{x^2 - 2x - 8}$</div>
+          <div class="paso root-step">
+            <div class="paso-label">Condición — lo de adentro de la raíz debe ser $\geq 0$</div>
+            $x^2 - 2x - 8 \geq 0$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Factorizar — buscar dos números que multipliquen $-8$ y sumen $-2$</div>
+            $(x - 4)(x + 2) \geq 0$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Línea de signos — raíces en $x=4$ y $x=-2$, parábola abre arriba</div>
+            Positiva fuera de las raíces: $x \leq -2$ ó $x \geq 4$
+          </div>
+          <div class="resultado">$$\text{Dom}(f) = (-\infty, -2] \cup [4, +\infty)$$</div>
+        </div>
+
+        <div class="solucion">
+          <div class="solucion-title">🔴 2) Dominio de $f(x) = \dfrac{1}{\sqrt{4 - x^2}}$</div>
+          <div class="paso root-step">
+            <div class="paso-label">Condición — raíz en denominador: debe ser estrictamente $> 0$</div>
+            $4 - x^2 > 0$ (no $\geq$ porque si fuera 0, dividiríamos por cero)
+          </div>
+          <div class="paso">
+            <div class="paso-label">Resolver la inecuación</div>
+            $4 - x^2 > 0 \Rightarrow x^2 < 4 \Rightarrow -2 < x < 2$<br>
+            Equivalentemente: $(2-x)(2+x) > 0$, positivo entre las raíces $-2$ y $2$
+          </div>
+          <div class="resultado">$$\text{Dom}(f) = (-2,\; 2)$$
+          Abierto en ambos extremos porque allí la raíz sería 0</div>
+        </div>
+
+        <div class="solucion">
+          <div class="solucion-title">🔴 3) $(g \circ f)(x)$ con $f(x) = \sqrt{x-1}$ y $g(x) = x^2 + 3$</div>
+          <div class="paso">
+            <div class="paso-label">Composición — sustituir $f(x)$ dentro de $g$</div>
+            $(g \circ f)(x) = g(f(x)) = g(\sqrt{x-1}) = (\sqrt{x-1})^2 + 3$
+          </div>
+          <div class="paso root-step">
+            <div class="paso-label">Simplificar — $(\sqrt{a})^2 = a$ cuando $a \geq 0$</div>
+            $= (x - 1) + 3 = x + 2$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Dominio — el de $f$ restringe la composición</div>
+            $f(x)$ requiere $x - 1 \geq 0 \Rightarrow x \geq 1$
+          </div>
+          <div class="resultado">$$(g \circ f)(x) = x + 2, \quad \text{Dom} = [1, +\infty)$$
+          Aunque la expresión final es lineal, el dominio se hereda de $f$</div>
+        </div>
+
+        <div class="solucion">
+          <div class="solucion-title">4) Inversa de $f(x) = \dfrac{3x-2}{x+3}$</div>
+          <div class="paso">
+            <div class="paso-label">Escribir $y = f(x)$ e intercambiar $x$ con $y$</div>
+            $y = \frac{3x-2}{x+3} \longrightarrow x = \frac{3y-2}{y+3}$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Despejar $y$ — multiplicar cruzado y agrupar</div>
+            $x(y+3) = 3y - 2$<br>
+            $xy + 3x = 3y - 2$<br>
+            $xy - 3y = -2 - 3x$<br>
+            $y(x - 3) = -(3x + 2)$<br>
+            $y = \frac{-(3x+2)}{x-3} = \frac{3x+2}{3-x}$
+          </div>
+          <div class="resultado">$$f^{-1}(x) = \frac{3x + 2}{3 - x}$$</div>
+        </div>
+
+        <div class="solucion">
+          <div class="solucion-title">🔴 5) Inversa de $f(x) = x^3 + 2$</div>
+          <div class="paso">
+            <div class="paso-label">Intercambiar variables</div>
+            $x = y^3 + 2$
+          </div>
+          <div class="paso root-step">
+            <div class="paso-label">Despejar $y$ — involucra raíz cúbica</div>
+            $y^3 = x - 2 \Rightarrow y = \sqrt[3]{x - 2}$
+          </div>
+          <div class="resultado">$$f^{-1}(x) = \sqrt[3]{x - 2}$$
+          La raíz cúbica (impar) existe para todo $\mathbb{R}$, así que el dominio es $\mathbb{R}$</div>
+        </div>
+
+        <div class="solucion">
+          <div class="solucion-title">🔴 6) Vértice, raíces, dominio y rango de $y = -x^2 + 4x - 1$</div>
+          <div class="paso">
+            <div class="paso-label">Vértice — usar $x_v = \frac{-b}{2a}$</div>
+            $a=-1,\; b=4,\; c=-1$. $x_v = \frac{-4}{2(-1)} = 2$<br>
+            $y_v = -(4) + 4(2) - 1 = -4 + 8 - 1 = 3$. $V = (2, 3)$
+          </div>
+          <div class="paso root-step">
+            <div class="paso-label">Raíces — fórmula general (no factoriza fácil)</div>
+            $\Delta = 16 - 4(-1)(-1) = 16 - 4 = 12$<br>
+            $x = \frac{-4 \pm \sqrt{12}}{-2} = \frac{-4 \pm 2\sqrt{3}}{-2} = 2 \mp \sqrt{3}$<br>
+            $x_1 = 2 - \sqrt{3} \approx 0.27$ y $x_2 = 2 + \sqrt{3} \approx 3.73$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Dominio y Rango — $a < 0$, parábola abre hacia abajo</div>
+            Dom $= \mathbb{R}$. Rango: el vértice es el máximo.
+          </div>
+          <div class="resultado">$V = (2, 3)$, raíces: $x = 2 \pm \sqrt{3}$<br>
+          Dom $= \mathbb{R}$, Ran $= (-\infty, 3]$</div>
+        </div>
+
+        <div class="solucion">
+          <div class="solucion-title">🔴 7) Dominio y Rango de $f(x) = 3 - \sqrt{2x - 6}$</div>
+          <div class="paso root-step">
+            <div class="paso-label">Dominio — condición de la raíz</div>
+            $2x - 6 \geq 0 \Rightarrow x \geq 3$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Rango — analizar qué valores puede tomar $f$</div>
+            $\sqrt{2x-6} \geq 0$ siempre, y crece sin límite.<br>
+            Entonces $f(x) = 3 - \sqrt{2x-6} \leq 3$ (máximo cuando $\sqrt{}=0$, en $x=3$).<br>
+            A medida que $x$ crece, $\sqrt{}$ crece, y $f$ disminuye sin cota.
+          </div>
+          <div class="resultado">Dom $= [3, +\infty)$, Ran $= (-\infty, 3]$<br>
+          El valor máximo es $f(3) = 3 - 0 = 3$</div>
+        </div>
+
+        <div class="solucion">
+          <div class="solucion-title">8) Asíntotas de $y = \dfrac{x^2-3x-4}{2x^2+4x}$</div>
+          <div class="paso">
+            <div class="paso-label">Asíntotas Verticales — denominator = 0</div>
+            $2x^2 + 4x = 2x(x+2) = 0 \Rightarrow x = 0$ ó $x = -2$<br>
+            Verificar que el numerador no sea 0 en esos puntos:<br>
+            $x=0$: $0-0-4=-4 \neq 0$ ✓ → AV en $x=0$<br>
+            $x=-2$: $4+6-4=6 \neq 0$ ✓ → AV en $x=-2$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Asíntota Horizontal — grados iguales (ambos grado 2)</div>
+            $y = \frac{\text{coef. principal num.}}{\text{coef. principal den.}} = \frac{1}{2}$
+          </div>
+          <div class="resultado">AV: $x = 0$ y $x = -2$<br>
+          AH: $y = \frac{1}{2}$<br>
+          Dom $= \mathbb{R} - \{-2, 0\}$, Ran $= \mathbb{R} - \{\frac{1}{2}\}$ (verificar)</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- CHARLA 5: LÍMITES -->
+<!-- ============================================================ -->
+<section class="charla" id="charla5">
+  <div class="charla-header">
+    <div class="charla-num">5</div>
+    <h2>Límites</h2>
+  </div>
+
+  <!-- 5.1 LÍMITES POR SUSTITUCIÓN -->
+  <div class="subtema">
+    <h3>5.1 — Límites por Sustitución Directa</h3>
+    <div class="teoria">
+      <h3>Primer intento: sustituir</h3>
+      <p>Siempre intenta primero reemplazar $x$ por el valor al que tiende. Si obtienes un número real definido, ese es el límite. Si obtienes $\frac{0}{0}$, $\frac{\infty}{\infty}$, o $\infty - \infty$, es una <strong>indeterminación</strong> y debes usar técnicas algebraicas.</p>
+    </div>
+
+    <div class="ejemplo">
+      <div class="ejemplo-header" onclick="toggleEjemplo(this)">
+        🔴 Ejemplo: $\displaystyle\lim_{x \to 5} \sqrt{x^2 + 3x + 9}$
+      </div>
+      <div class="ejemplo-body">
+        <div class="paso">
+          <div class="paso-label">Sustitución directa</div>
+          $\sqrt{25 + 15 + 9} = \sqrt{49} = 7$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Resultado</div>
+          $$\boxed{\lim_{x \to 5} \sqrt{x^2 + 3x + 9} = 7}$$
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5.2 INDETERMINACIÓN 0/0 CON RAÍCES -->
+  <div class="subtema">
+    <h3>5.2 — Indeterminación $\frac{0}{0}$ con Raíces: RACIONALIZACIÓN</h3>
+
+    <div class="root-alert">
+      <h4>Técnica estrella: Racionalización (Conjugada)</h4>
+      <p>Cuando tienes $\sqrt{a} - \sqrt{b}$ o expresiones con raíces que dan $\frac{0}{0}$, multiplica numerador y denominador por la <strong>conjugada</strong>:</p>
+      $$(\sqrt{a} - \sqrt{b})(\sqrt{a} + \sqrt{b}) = a - b$$
+      <p>Esto elimina las raíces y permite cancelar el factor que causa la indeterminación.</p>
+    </div>
+
+    <div class="ejemplo">
+      <div class="ejemplo-header" onclick="toggleEjemplo(this)">
+        🔴 Ejemplo: $\displaystyle\lim_{x \to 0} \frac{\sqrt{x+4} - 2}{x}$
+      </div>
+      <div class="ejemplo-body">
+        <div class="paso">
+          <div class="paso-label">Verificar indeterminación</div>
+          $\frac{\sqrt{0+4} - 2}{0} = \frac{2-2}{0} = \frac{0}{0}$ → indeterminación
+        </div>
+        <div class="paso root-step">
+          <div class="paso-label">Paso 1 — Multiplicar por la conjugada</div>
+          $$\frac{\sqrt{x+4} - 2}{x} \cdot \frac{\sqrt{x+4} + 2}{\sqrt{x+4} + 2}$$
+        </div>
+        <div class="paso root-step">
+          <div class="paso-label">Paso 2 — Desarrollar numerador</div>
+          $$\frac{(x+4) - 4}{x(\sqrt{x+4} + 2)} = \frac{x}{x(\sqrt{x+4} + 2)}$$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 3 — Cancelar $x$</div>
+          $$\frac{1}{\sqrt{x+4} + 2}$$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 4 — Sustituir $x = 0$</div>
+          $$\frac{1}{\sqrt{4} + 2} = \frac{1}{4}$$
+          $$\boxed{\lim_{x \to 0} \frac{\sqrt{x+4} - 2}{x} = \frac{1}{4}}$$
+        </div>
+      </div>
+    </div>
+
+    <div class="ejemplo">
+      <div class="ejemplo-header" onclick="toggleEjemplo(this)">
+        🔴 Ejemplo: $\displaystyle\lim_{x \to 3} \frac{x - 3}{\sqrt{x+1} - 2}$
+      </div>
+      <div class="ejemplo-body">
+        <div class="paso">
+          <div class="paso-label">Verificar</div>
+          $\frac{3-3}{\sqrt{4}-2} = \frac{0}{0}$ → indeterminación
+        </div>
+        <div class="paso root-step">
+          <div class="paso-label">Paso 1 — Multiplicar por conjugada del denominador</div>
+          $$\frac{x - 3}{\sqrt{x+1} - 2} \cdot \frac{\sqrt{x+1} + 2}{\sqrt{x+1} + 2} = \frac{(x-3)(\sqrt{x+1}+2)}{(x+1) - 4}$$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 2 — Simplificar denominador</div>
+          $$= \frac{(x-3)(\sqrt{x+1}+2)}{x - 3} = \sqrt{x+1} + 2$$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 3 — Sustituir</div>
+          $\sqrt{3+1} + 2 = 2 + 2 = 4$
+          $$\boxed{\lim_{x \to 3} \frac{x - 3}{\sqrt{x+1} - 2} = 4}$$
+        </div>
+      </div>
+    </div>
+
+    <div class="ejemplo">
+      <div class="ejemplo-header" onclick="toggleEjemplo(this)">
+        🔴 Ejemplo Difícil: $\displaystyle\lim_{x \to 0} \frac{\sqrt{1+x} - \sqrt{1-x}}{x}$
+      </div>
+      <div class="ejemplo-body">
+        <div class="paso">
+          <div class="paso-label">Verificar</div>
+          $\frac{\sqrt{1} - \sqrt{1}}{0} = \frac{0}{0}$ → indeterminación
+        </div>
+        <div class="paso root-step">
+          <div class="paso-label">Paso 1 — Multiplicar por conjugada del numerador</div>
+          $$\frac{(\sqrt{1+x} - \sqrt{1-x})(\sqrt{1+x} + \sqrt{1-x})}{x(\sqrt{1+x} + \sqrt{1-x})}$$
+        </div>
+        <div class="paso root-step">
+          <div class="paso-label">Paso 2 — Aplicar diferencia de cuadrados en numerador</div>
+          $$= \frac{(1+x) - (1-x)}{x(\sqrt{1+x} + \sqrt{1-x})} = \frac{2x}{x(\sqrt{1+x} + \sqrt{1-x})}$$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 3 — Cancelar $x$</div>
+          $$= \frac{2}{\sqrt{1+x} + \sqrt{1-x}}$$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 4 — Sustituir $x = 0$</div>
+          $$= \frac{2}{\sqrt{1} + \sqrt{1}} = \frac{2}{2} = 1$$
+          $$\boxed{\lim_{x \to 0} \frac{\sqrt{1+x} - \sqrt{1-x}}{x} = 1}$$
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5.3 LÍMITES AL INFINITO -->
+  <div class="subtema">
+    <h3>5.3 — Límites al Infinito</h3>
+    <div class="teoria">
+      <h3>Reglas para $\lim_{x \to \infty}$</h3>
+      <ul>
+        <li>$\lim_{x \to \infty} \frac{k}{x^n} = 0$ para $n > 0$</li>
+        <li>Para $\frac{P(x)}{Q(x)}$: dividir numerador y denominador por la <strong>mayor potencia de $x$</strong> del denominador</li>
+        <li>Si grado num = grado den → cociente de coeficientes principales</li>
+        <li>Si grado num < grado den → 0</li>
+        <li>Si grado num > grado den → $\pm\infty$</li>
+      </ul>
+    </div>
+
+    <div class="root-alert">
+      <h4>Límites al infinito CON RAÍCES</h4>
+      <p><strong>Clave:</strong> $\sqrt{x^2} = |x|$. Para $x \to +\infty$: $\sqrt{x^2} = x$. Para $x \to -\infty$: $\sqrt{x^2} = -x$.</p>
+      <p>Al dividir por $x$ dentro de una raíz: $\sqrt{ax^2 + bx} = |x|\sqrt{a + \frac{b}{x}}$</p>
+      <p>Para la forma $\infty - \infty$ con raíces: multiplicar por la conjugada.</p>
+    </div>
+
+    <div class="ejemplo">
+      <div class="ejemplo-header" onclick="toggleEjemplo(this)">
+        🔴 Ejemplo: $\displaystyle\lim_{x \to \infty} \frac{\sqrt{9x^2 - 3x + 2}}{4x^2 - x}$
+      </div>
+      <div class="ejemplo-body">
+        <div class="paso root-step">
+          <div class="paso-label">Paso 1 — Extraer $x^2$ de la raíz y $x^2$ del denominador</div>
+          $$\frac{\sqrt{x^2(9 - \frac{3}{x} + \frac{2}{x^2})}}{x^2(4 - \frac{1}{x})} = \frac{x\sqrt{9 - \frac{3}{x} + \frac{2}{x^2}}}{x^2(4 - \frac{1}{x})}$$
+          <p>(Usamos $\sqrt{x^2} = x$ porque $x \to +\infty$)</p>
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 2 — Simplificar $x$</div>
+          $$= \frac{\sqrt{9 - \frac{3}{x} + \frac{2}{x^2}}}{x(4 - \frac{1}{x})}$$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 3 — Cuando $x \to \infty$</div>
+          Numerador $\to \sqrt{9} = 3$. Denominador $\to \infty$.
+          $$\boxed{= 0}$$
+        </div>
+      </div>
+    </div>
+
+    <div class="ejemplo">
+      <div class="ejemplo-header" onclick="toggleEjemplo(this)">
+        🔴 Ejemplo: $\displaystyle\lim_{x \to \infty} \frac{\sqrt{1 + x^2}}{2x^2 - 3}$
+      </div>
+      <div class="ejemplo-body">
+        <div class="paso root-step">
+          <div class="paso-label">Paso 1 — Dentro de la raíz, el término dominante es $x^2$</div>
+          $\sqrt{1+x^2} = \sqrt{x^2({\frac{1}{x^2}+1})} = x\sqrt{\frac{1}{x^2}+1}$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 2 — Dividir todo por $x^2$</div>
+          $$\frac{x\sqrt{\frac{1}{x^2}+1}}{x^2(2 - \frac{3}{x^2})} = \frac{\sqrt{\frac{1}{x^2}+1}}{x(2 - \frac{3}{x^2})}$$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 3 — Cuando $x \to \infty$</div>
+          Numerador $\to \sqrt{1} = 1$. Denominador $\to \infty$.
+          $$\boxed{= 0}$$
+        </div>
+      </div>
+    </div>
+
+    <div class="ejemplo">
+      <div class="ejemplo-header" onclick="toggleEjemplo(this)">
+        🔴 Ejemplo: $\displaystyle\lim_{x \to \infty} \frac{x^2 - \sqrt{9x^4 - 3x}}{2x^2 - 5x + 3}$
+      </div>
+      <div class="ejemplo-body">
+        <div class="paso root-step">
+          <div class="paso-label">Paso 1 — Sacar $x^2$ de la raíz</div>
+          $\sqrt{9x^4 - 3x} = \sqrt{x^4(9 - \frac{3}{x^3})} = x^2\sqrt{9 - \frac{3}{x^3}}$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 2 — Sustituir y dividir por $x^2$</div>
+          $$\frac{x^2 - x^2\sqrt{9 - \frac{3}{x^3}}}{x^2(2 - \frac{5}{x} + \frac{3}{x^2})} = \frac{1 - \sqrt{9 - \frac{3}{x^3}}}{2 - \frac{5}{x} + \frac{3}{x^2}}$$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 3 — Evaluar</div>
+          $$\frac{1 - \sqrt{9}}{2} = \frac{1 - 3}{2} = \frac{-2}{2} = -1$$
+          $$\boxed{= -1}$$
+        </div>
+      </div>
+    </div>
+
+    <div class="ejemplo">
+      <div class="ejemplo-header" onclick="toggleEjemplo(this)">
+        🔴 Ejemplo ($\infty - \infty$): $\displaystyle\lim_{x \to \infty} \left(\sqrt{x^2 - 3} - \sqrt{x^2 + 5}\right)$
+      </div>
+      <div class="ejemplo-body">
+        <div class="paso">
+          <div class="paso-label">Verificar</div>
+          Ambos términos $\to \infty$, así que es $\infty - \infty$ → indeterminación.
+        </div>
+        <div class="paso root-step">
+          <div class="paso-label">Paso 1 — Multiplicar por conjugada</div>
+          $$\frac{(\sqrt{x^2-3} - \sqrt{x^2+5})(\sqrt{x^2-3} + \sqrt{x^2+5})}{\sqrt{x^2-3} + \sqrt{x^2+5}}$$
+        </div>
+        <div class="paso root-step">
+          <div class="paso-label">Paso 2 — Diferencia de cuadrados en numerador</div>
+          $$= \frac{(x^2 - 3) - (x^2 + 5)}{\sqrt{x^2-3} + \sqrt{x^2+5}} = \frac{-8}{\sqrt{x^2-3} + \sqrt{x^2+5}}$$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 3 — Cuando $x \to \infty$, el denominador $\to \infty$</div>
+          $$\boxed{= 0}$$
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5.4 LÍMITES TRIGONOMÉTRICOS -->
+  <div class="subtema">
+    <h3>5.4 — Límites Trigonométricos</h3>
+    <div class="teoria">
+      <h3>Propiedades Fundamentales</h3>
+      <div class="formula">
+        $$\lim_{x \to 0} \frac{\sin(kx)}{kx} = 1 \qquad \lim_{x \to 0} \frac{kx}{\sin(kx)} = 1 \qquad \lim_{x \to 0} \frac{1 - \cos(kx)}{kx} = 0$$
+      </div>
+      <p><strong>Técnica de amplificación:</strong> Si tienes $\frac{\sin(ax)}{bx}$, multiplica y divide por $a$:</p>
+      $$\frac{\sin(ax)}{bx} = \frac{a}{b} \cdot \frac{\sin(ax)}{ax} \to \frac{a}{b} \cdot 1 = \frac{a}{b}$$
+      <p><strong>Identidad útil:</strong> $\tan(x) = \frac{\sin(x)}{\cos(x)}$, así $\frac{\tan x}{x} = \frac{\sin x}{x} \cdot \frac{1}{\cos x} \to 1 \cdot 1 = 1$</p>
+    </div>
+
+    <div class="ejemplo">
+      <div class="ejemplo-header" onclick="toggleEjemplo(this)">
+        Ejemplo: $\displaystyle\lim_{x \to 0} \frac{\sin(3x)}{5x}$
+      </div>
+      <div class="ejemplo-body">
+        <div class="paso">
+          <div class="paso-label">Amplificar</div>
+          $= \frac{3}{5} \cdot \frac{\sin(3x)}{3x}$. Como $x \to 0$, $3x \to 0$, entonces $\frac{\sin(3x)}{3x} \to 1$.
+          $$\boxed{= \frac{3}{5}}$$
+        </div>
+      </div>
+    </div>
+
+    <div class="ejemplo">
+      <div class="ejemplo-header" onclick="toggleEjemplo(this)">
+        Ejemplo: $\displaystyle\lim_{x \to 0} \frac{\sin(2x)\sin(3x)}{x^2}$
+      </div>
+      <div class="ejemplo-body">
+        <div class="paso">
+          <div class="paso-label">Separar y amplificar</div>
+          $$= \frac{\sin(2x)}{x} \cdot \frac{\sin(3x)}{x} = 2 \cdot \frac{\sin(2x)}{2x} \cdot 3 \cdot \frac{\sin(3x)}{3x} \to 2 \cdot 1 \cdot 3 \cdot 1 = 6$$
+          $$\boxed{= 6}$$
+        </div>
+      </div>
+    </div>
+
+    <div class="ejemplo">
+      <div class="ejemplo-header" onclick="toggleEjemplo(this)">
+        Ejemplo: $\displaystyle\lim_{x \to 0} \frac{1 - \cos(4x)}{x}$
+      </div>
+      <div class="ejemplo-body">
+        <div class="paso">
+          <div class="paso-label">Amplificar por 4</div>
+          $$= 4 \cdot \frac{1 - \cos(4x)}{4x}$$
+          Usando $\lim_{u \to 0} \frac{1 - \cos u}{u} = 0$:
+          $$= 4 \cdot 0 = 0$$
+          $$\boxed{= 0}$$
+        </div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <h4>Propiedad alternativa (tu PDF usa esta)</h4>
+      <p>Algunos textos definen $\lim_{x \to 0} \frac{1 - \cos(kx)}{kx} = 1$, pero eso es <strong>incorrecto</strong>. El límite correcto es $0$.</p>
+      <p>Lo que sí vale es: $\lim_{x \to 0} \frac{1 - \cos x}{x^2} = \frac{1}{2}$ (con $x^2$ en el denominador, no $x$).</p>
+      <p>Si el profesor usa la convención del PDF, verifica con él cuál fórmula aplican en clase.</p>
+    </div>
+  </div>
+
+  <!-- PRACTICA LÍMITES -->
+  <div class="practica">
+    <h3>Ejercicios de Práctica — Límites</h3>
+    <ol>
+      <li class="root-ex">$\displaystyle\lim_{x \to 1} \frac{\sqrt{x} - 1}{x - 1}$</li>
+      <li class="root-ex">$\displaystyle\lim_{x \to 4} \frac{x - 4}{\sqrt{x} - 2}$</li>
+      <li class="root-ex">$\displaystyle\lim_{x \to 0} \frac{\sqrt{x+9} - 3}{x}$</li>
+      <li class="root-ex">$\displaystyle\lim_{x \to 2} \frac{\sqrt{x+2} - 2}{x - 2}$</li>
+      <li class="root-ex">$\displaystyle\lim_{x \to 0} \frac{\sqrt{4+x} - \sqrt{4-x}}{x}$</li>
+      <li class="root-ex">$\displaystyle\lim_{x \to \infty} \frac{\sqrt{4x^2 + 3x}}{2x - 1}$</li>
+      <li class="root-ex">$\displaystyle\lim_{x \to \infty} \left(\sqrt{x^2 + 4x} - x\right)$</li>
+      <li class="root-ex">$\displaystyle\lim_{x \to \infty} \left(\sqrt{x^2 + x + 1} - \sqrt{x^2 - x + 1}\right)$</li>
+      <li>$\displaystyle\lim_{x \to 0} \frac{\sin(7x)}{3x}$</li>
+      <li>$\displaystyle\lim_{x \to 0} \frac{\tan(2x)}{5x}$</li>
+    </ol>
+
+    <div class="respuestas">
+      <div class="resp-toggle" onclick="toggleResp(this)">▶ Ver Respuestas Detalladas</div>
+      <div class="resp-content">
+
+        <div class="solucion">
+          <div class="solucion-title">🔴 1) $\displaystyle\lim_{x \to 1} \frac{\sqrt{x} - 1}{x - 1}$</div>
+          <div class="paso">
+            <div class="paso-label">Verificar — sustituir $x=1$</div>
+            $\frac{\sqrt{1}-1}{1-1} = \frac{0}{0}$ → indeterminación, necesitamos racionalizar
+          </div>
+          <div class="paso root-step">
+            <div class="paso-label">Multiplicar por la conjugada del numerador $\frac{\sqrt{x}+1}{\sqrt{x}+1}$</div>
+            $$\frac{(\sqrt{x}-1)(\sqrt{x}+1)}{(x-1)(\sqrt{x}+1)} = \frac{x - 1}{(x-1)(\sqrt{x}+1)}$$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Cancelar el factor $(x-1)$ que causaba el $\frac{0}{0}$</div>
+            $$= \frac{1}{\sqrt{x}+1}$$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Ahora sí sustituir $x=1$</div>
+            $$= \frac{1}{\sqrt{1}+1} = \frac{1}{2}$$
+          </div>
+          <div class="resultado">$$\lim_{x \to 1} \frac{\sqrt{x} - 1}{x - 1} = \frac{1}{2}$$</div>
+        </div>
+
+        <div class="solucion">
+          <div class="solucion-title">🔴 2) $\displaystyle\lim_{x \to 4} \frac{x - 4}{\sqrt{x} - 2}$</div>
+          <div class="paso">
+            <div class="paso-label">Verificar — $\frac{4-4}{\sqrt{4}-2} = \frac{0}{0}$ → racionalizar</div>
+          </div>
+          <div class="paso root-step">
+            <div class="paso-label">Multiplicar por la conjugada del denominador $\frac{\sqrt{x}+2}{\sqrt{x}+2}$</div>
+            $$\frac{(x-4)(\sqrt{x}+2)}{(\sqrt{x}-2)(\sqrt{x}+2)} = \frac{(x-4)(\sqrt{x}+2)}{x - 4}$$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Cancelar $(x-4)$ y sustituir $x=4$</div>
+            $$= \sqrt{x} + 2 = \sqrt{4} + 2 = 4$$
+          </div>
+          <div class="resultado">$$\lim_{x \to 4} \frac{x - 4}{\sqrt{x} - 2} = 4$$</div>
+        </div>
+
+        <div class="solucion">
+          <div class="solucion-title">🔴 3) $\displaystyle\lim_{x \to 0} \frac{\sqrt{x+9} - 3}{x}$</div>
+          <div class="paso">
+            <div class="paso-label">Verificar — $\frac{\sqrt{9}-3}{0} = \frac{0}{0}$ → racionalizar</div>
+          </div>
+          <div class="paso root-step">
+            <div class="paso-label">Conjugada del numerador $\frac{\sqrt{x+9}+3}{\sqrt{x+9}+3}$</div>
+            $$\frac{(\sqrt{x+9}-3)(\sqrt{x+9}+3)}{x(\sqrt{x+9}+3)} = \frac{(x+9) - 9}{x(\sqrt{x+9}+3)} = \frac{x}{x(\sqrt{x+9}+3)}$$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Cancelar $x$ y sustituir $x=0$</div>
+            $$= \frac{1}{\sqrt{x+9}+3} = \frac{1}{\sqrt{9}+3} = \frac{1}{6}$$
+          </div>
+          <div class="resultado">$$\lim_{x \to 0} \frac{\sqrt{x+9} - 3}{x} = \frac{1}{6}$$</div>
+        </div>
+
+        <div class="solucion">
+          <div class="solucion-title">🔴 4) $\displaystyle\lim_{x \to 2} \frac{\sqrt{x+2} - 2}{x - 2}$</div>
+          <div class="paso">
+            <div class="paso-label">Verificar — $\frac{\sqrt{4}-2}{0} = \frac{0}{0}$ → racionalizar</div>
+          </div>
+          <div class="paso root-step">
+            <div class="paso-label">Conjugada del numerador $\frac{\sqrt{x+2}+2}{\sqrt{x+2}+2}$</div>
+            $$\frac{(x+2) - 4}{(x-2)(\sqrt{x+2}+2)} = \frac{x-2}{(x-2)(\sqrt{x+2}+2)}$$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Cancelar $(x-2)$ y sustituir $x=2$</div>
+            $$= \frac{1}{\sqrt{x+2}+2} = \frac{1}{\sqrt{4}+2} = \frac{1}{4}$$
+          </div>
+          <div class="resultado">$$\lim_{x \to 2} \frac{\sqrt{x+2} - 2}{x - 2} = \frac{1}{4}$$</div>
+        </div>
+
+        <div class="solucion">
+          <div class="solucion-title">🔴 5) $\displaystyle\lim_{x \to 0} \frac{\sqrt{4+x} - \sqrt{4-x}}{x}$</div>
+          <div class="paso">
+            <div class="paso-label">Verificar — $\frac{\sqrt{4}-\sqrt{4}}{0} = \frac{0}{0}$ → racionalizar</div>
+          </div>
+          <div class="paso root-step">
+            <div class="paso-label">Conjugada del numerador (tiene dos raíces, la conjugada cambia el signo entre ellas)</div>
+            $$\frac{(\sqrt{4+x}-\sqrt{4-x})(\sqrt{4+x}+\sqrt{4-x})}{x(\sqrt{4+x}+\sqrt{4-x})}$$
+          </div>
+          <div class="paso root-step">
+            <div class="paso-label">Numerador: diferencia de cuadrados $(\sqrt{a}-\sqrt{b})(\sqrt{a}+\sqrt{b}) = a - b$</div>
+            $$= \frac{(4+x)-(4-x)}{x(\sqrt{4+x}+\sqrt{4-x})} = \frac{2x}{x(\sqrt{4+x}+\sqrt{4-x})}$$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Cancelar $x$ y sustituir $x=0$</div>
+            $$= \frac{2}{\sqrt{4+0}+\sqrt{4-0}} = \frac{2}{2+2} = \frac{1}{2}$$
+          </div>
+          <div class="resultado">$$\lim_{x \to 0} \frac{\sqrt{4+x} - \sqrt{4-x}}{x} = \frac{1}{2}$$</div>
+        </div>
+
+        <div class="solucion">
+          <div class="solucion-title">🔴 6) $\displaystyle\lim_{x \to \infty} \frac{\sqrt{4x^2 + 3x}}{2x - 1}$</div>
+          <div class="paso root-step">
+            <div class="paso-label">Extraer $x^2$ de dentro de la raíz — el término dominante</div>
+            $\sqrt{4x^2+3x} = \sqrt{x^2\!\left(4 + \frac{3}{x}\right)} = |x|\sqrt{4 + \frac{3}{x}}$<br>
+            Como $x \to +\infty$: $|x| = x$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Dividir numerador y denominador por $x$</div>
+            $$\frac{x\sqrt{4+\frac{3}{x}}}{x\!\left(2-\frac{1}{x}\right)} = \frac{\sqrt{4+\frac{3}{x}}}{2-\frac{1}{x}}$$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Evaluar cuando $x \to \infty$ — las fracciones con $x$ en denominador $\to 0$</div>
+            $$= \frac{\sqrt{4+0}}{2-0} = \frac{2}{2} = 1$$
+          </div>
+          <div class="resultado">$$\lim_{x \to \infty} \frac{\sqrt{4x^2 + 3x}}{2x - 1} = 1$$</div>
+        </div>
+
+        <div class="solucion">
+          <div class="solucion-title">🔴 7) $\displaystyle\lim_{x \to \infty} \left(\sqrt{x^2 + 4x} - x\right)$</div>
+          <div class="paso">
+            <div class="paso-label">Forma $\infty - \infty$ → multiplicar por conjugada</div>
+            $$\frac{(\sqrt{x^2+4x}-x)(\sqrt{x^2+4x}+x)}{\sqrt{x^2+4x}+x}$$
+          </div>
+          <div class="paso root-step">
+            <div class="paso-label">Numerador: diferencia de cuadrados</div>
+            $$= \frac{(x^2+4x) - x^2}{\sqrt{x^2+4x}+x} = \frac{4x}{\sqrt{x^2+4x}+x}$$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Dividir numerador y denominador por $x$ ($x>0$)</div>
+            $$= \frac{4}{\sqrt{1+\frac{4}{x}}+1}$$
+            La raíz: $\sqrt{x^2+4x}/x = \sqrt{1+4/x}$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Evaluar cuando $x \to \infty$</div>
+            $$= \frac{4}{\sqrt{1+0}+1} = \frac{4}{2} = 2$$
+          </div>
+          <div class="resultado">$$\lim_{x \to \infty} \left(\sqrt{x^2 + 4x} - x\right) = 2$$</div>
+        </div>
+
+        <div class="solucion">
+          <div class="solucion-title">🔴 8) $\displaystyle\lim_{x \to \infty} \left(\sqrt{x^2 + x + 1} - \sqrt{x^2 - x + 1}\right)$</div>
+          <div class="paso">
+            <div class="paso-label">Forma $\infty - \infty$ → conjugada de las dos raíces</div>
+            $$\frac{(\sqrt{x^2+x+1}-\sqrt{x^2-x+1})(\sqrt{x^2+x+1}+\sqrt{x^2-x+1})}{\sqrt{x^2+x+1}+\sqrt{x^2-x+1}}$$
+          </div>
+          <div class="paso root-step">
+            <div class="paso-label">Numerador: diferencia de cuadrados</div>
+            $$= \frac{(x^2+x+1)-(x^2-x+1)}{\sqrt{x^2+x+1}+\sqrt{x^2-x+1}} = \frac{2x}{\sqrt{x^2+x+1}+\sqrt{x^2-x+1}}$$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Dividir todo por $x$ ($x > 0$)</div>
+            $$= \frac{2}{\sqrt{1+\frac{1}{x}+\frac{1}{x^2}}+\sqrt{1-\frac{1}{x}+\frac{1}{x^2}}}$$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Evaluar — cada raíz $\to \sqrt{1} = 1$</div>
+            $$= \frac{2}{1+1} = 1$$
+          </div>
+          <div class="resultado">$$\lim_{x \to \infty} \left(\sqrt{x^2 + x + 1} - \sqrt{x^2 - x + 1}\right) = 1$$</div>
+        </div>
+
+        <div class="solucion">
+          <div class="solucion-title">9) $\displaystyle\lim_{x \to 0} \frac{\sin(7x)}{3x}$</div>
+          <div class="paso">
+            <div class="paso-label">Amplificar — necesitamos que el argumento del seno coincida con el denominador</div>
+            $$\frac{\sin(7x)}{3x} = \frac{7}{3} \cdot \frac{\sin(7x)}{7x}$$
+            Multiplicamos y dividimos por 7 para crear la forma $\frac{\sin(u)}{u}$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Aplicar la propiedad $\lim_{u\to 0}\frac{\sin u}{u} = 1$</div>
+            Cuando $x \to 0$, $7x \to 0$, entonces $\frac{\sin(7x)}{7x} \to 1$
+          </div>
+          <div class="resultado">$$\lim_{x \to 0} \frac{\sin(7x)}{3x} = \frac{7}{3}$$</div>
+        </div>
+
+        <div class="solucion">
+          <div class="solucion-title">10) $\displaystyle\lim_{x \to 0} \frac{\tan(2x)}{5x}$</div>
+          <div class="paso">
+            <div class="paso-label">Reescribir tangente como $\frac{\text{seno}}{\text{coseno}}$</div>
+            $$\frac{\tan(2x)}{5x} = \frac{\sin(2x)}{5x \cdot \cos(2x)}$$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Amplificar para crear la forma $\frac{\sin(u)}{u}$</div>
+            $$= \frac{2}{5} \cdot \frac{\sin(2x)}{2x} \cdot \frac{1}{\cos(2x)}$$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Evaluar — $\frac{\sin(2x)}{2x} \to 1$ y $\cos(0) = 1$</div>
+            $$= \frac{2}{5} \cdot 1 \cdot \frac{1}{1} = \frac{2}{5}$$
+          </div>
+          <div class="resultado">$$\lim_{x \to 0} \frac{\tan(2x)}{5x} = \frac{2}{5}$$</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- CHARLA 6: DERIVADAS -->
+<!-- ============================================================ -->
+<section class="charla" id="charla6">
+  <div class="charla-header">
+    <div class="charla-num">6</div>
+    <h2>Derivadas</h2>
+  </div>
+
+  <!-- 6.1 DEFINICIÓN -->
+  <div class="subtema">
+    <h3>6.1 — Derivada por Definición</h3>
+    <div class="formula">
+      $$f'(x) = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h}$$
+    </div>
+    <div class="teoria">
+      <h3>Pasos</h3>
+      <ol>
+        <li>Calcular $f(x+h)$: reemplazar $x$ por $(x+h)$</li>
+        <li>Restar $f(x)$</li>
+        <li>Dividir por $h$</li>
+        <li>Tomar el límite cuando $h \to 0$</li>
+      </ol>
+    </div>
+
+    <div class="ejemplo">
+      <div class="ejemplo-header" onclick="toggleEjemplo(this)">
+        🔴 Ejemplo por Definición con raíz: $f(x) = \sqrt{x}$
+      </div>
+      <div class="ejemplo-body">
+        <div class="paso">
+          <div class="paso-label">Plantear la definición</div>
+          $$f'(x) = \lim_{h \to 0} \frac{\sqrt{x+h} - \sqrt{x}}{h}$$
+        </div>
+        <div class="paso root-step">
+          <div class="paso-label">Paso 1 — Racionalizar (conjugada)</div>
+          $$= \lim_{h \to 0} \frac{(\sqrt{x+h} - \sqrt{x})(\sqrt{x+h} + \sqrt{x})}{h(\sqrt{x+h} + \sqrt{x})}$$
+        </div>
+        <div class="paso root-step">
+          <div class="paso-label">Paso 2 — Simplificar numerador</div>
+          $$= \lim_{h \to 0} \frac{(x+h) - x}{h(\sqrt{x+h} + \sqrt{x})} = \lim_{h \to 0} \frac{h}{h(\sqrt{x+h} + \sqrt{x})}$$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Paso 3 — Cancelar h y evaluar</div>
+          $$= \frac{1}{\sqrt{x} + \sqrt{x}} = \frac{1}{2\sqrt{x}}$$
+          $$\boxed{f'(x) = \frac{1}{2\sqrt{x}}}$$
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6.2 REGLAS DE DERIVACIÓN -->
+  <div class="subtema">
+    <h3>6.2 — Reglas de Derivación</h3>
+    <div class="teoria">
+      <h3>Tabla de Reglas</h3>
+      <div class="formula">
+        <p><strong>Constante:</strong> $(c)' = 0$</p>
+        <p><strong>Potencia:</strong> $(x^n)' = nx^{n-1}$</p>
+        <p><strong>Constante × función:</strong> $(cf)' = cf'$</p>
+        <p><strong>Suma/Resta:</strong> $(f \pm g)' = f' \pm g'$</p>
+        <p><strong>Producto:</strong> $(fg)' = f'g + fg'$</p>
+        <p><strong>Cociente:</strong> $\left(\dfrac{f}{g}\right)' = \dfrac{f'g - fg'}{g^2}$</p>
+        <p><strong>Cadena:</strong> $[f(g(x))]' = f'(g(x)) \cdot g'(x)$</p>
+      </div>
+    </div>
+
+    <div class="root-alert">
+      <h4>Convertir raíces a exponentes SIEMPRE</h4>
+      <p>Esta es la clave para derivar raíces sin equivocarse:</p>
+      $$\sqrt{x} = x^{1/2} \qquad \sqrt[3]{x} = x^{1/3} \qquad \sqrt[n]{x^m} = x^{m/n}$$
+      $$\frac{1}{\sqrt{x}} = x^{-1/2} \qquad \frac{1}{x^n} = x^{-n}$$
+      <p>Luego aplica la <strong>regla de la potencia</strong> normalmente con exponentes fraccionarios.</p>
+    </div>
+  </div>
+
+  <!-- 6.3 DERIVADAS DE RAÍCES -->
+  <div class="subtema">
+    <h3>6.3 — Derivadas de Raíces (⚠️ Lo más importante)</h3>
+
+    <div class="ejemplo">
+      <div class="ejemplo-header" onclick="toggleEjemplo(this)">
+        🔴 Ejemplo básico: $f(x) = \sqrt{x}$
+      </div>
+      <div class="ejemplo-body">
+        <div class="paso root-step">
+          <div class="paso-label">Convertir</div>
+          $f(x) = x^{1/2}$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Derivar con regla de potencia</div>
+          $f'(x) = \frac{1}{2}x^{1/2 - 1} = \frac{1}{2}x^{-1/2} = \dfrac{1}{2\sqrt{x}}$
+        </div>
+      </div>
+    </div>
+
+    <div class="ejemplo">
+      <div class="ejemplo-header" onclick="toggleEjemplo(this)">
+        🔴 Ejemplo: $f(x) = \sqrt[3]{x^2}$
+      </div>
+      <div class="ejemplo-body">
+        <div class="paso root-step">
+          <div class="paso-label">Convertir</div>
+          $f(x) = x^{2/3}$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Derivar</div>
+          $f'(x) = \frac{2}{3}x^{2/3 - 1} = \frac{2}{3}x^{-1/3} = \dfrac{2}{3\sqrt[3]{x}}$
+        </div>
+      </div>
+    </div>
+
+    <div class="ejemplo">
+      <div class="ejemplo-header" onclick="toggleEjemplo(this)">
+        🔴 Ejemplo: $f(x) = 3\sqrt[5]{x^6}$
+      </div>
+      <div class="ejemplo-body">
+        <div class="paso root-step">
+          <div class="paso-label">Convertir</div>
+          $f(x) = 3x^{6/5}$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Derivar</div>
+          $f'(x) = 3 \cdot \frac{6}{5}x^{6/5 - 1} = \frac{18}{5}x^{1/5} = \frac{18}{5}\sqrt[5]{x}$
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6.4 RAÍCES CON REGLA DE LA CADENA -->
+  <div class="subtema">
+    <h3>6.4 — Raíces con Regla de la Cadena (⚠️ Muy frecuente en examen)</h3>
+
+    <div class="formula">
+      <p><strong>Fórmula clave:</strong></p>
+      $$\left[\sqrt{g(x)}\right]' = \frac{g'(x)}{2\sqrt{g(x)}}$$
+      <p>En general: $\left[(g(x))^{m/n}\right]' = \frac{m}{n}(g(x))^{m/n - 1} \cdot g'(x)$</p>
+    </div>
+
+    <div class="ejemplo">
+      <div class="ejemplo-header" onclick="toggleEjemplo(this)">
+        🔴 Ejemplo: $f(x) = \sqrt{x^2 + 2}$
+      </div>
+      <div class="ejemplo-body">
+        <div class="paso root-step">
+          <div class="paso-label">Identificar</div>
+          $f(x) = (x^2 + 2)^{1/2}$, donde $g(x) = x^2 + 2$, $g'(x) = 2x$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Aplicar cadena</div>
+          $f'(x) = \frac{1}{2}(x^2+2)^{-1/2} \cdot 2x = \dfrac{2x}{2\sqrt{x^2+2}}$
+          $$\boxed{f'(x) = \frac{x}{\sqrt{x^2 + 2}}}$$
+        </div>
+      </div>
+    </div>
+
+    <div class="ejemplo">
+      <div class="ejemplo-header" onclick="toggleEjemplo(this)">
+        🔴 Ejemplo: $f(x) = \sqrt{3x^2 - x}$
+      </div>
+      <div class="ejemplo-body">
+        <div class="paso root-step">
+          <div class="paso-label">Identificar</div>
+          $g(x) = 3x^2 - x$, $g'(x) = 6x - 1$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Aplicar cadena</div>
+          $$f'(x) = \frac{6x - 1}{2\sqrt{3x^2 - x}}$$
+        </div>
+      </div>
+    </div>
+
+    <div class="ejemplo">
+      <div class="ejemplo-header" onclick="toggleEjemplo(this)">
+        🔴 Ejemplo complejo: $f(x) = \sqrt[3]{(2x^2 - 5x + 1)^4}$
+      </div>
+      <div class="ejemplo-body">
+        <div class="paso root-step">
+          <div class="paso-label">Convertir</div>
+          $f(x) = (2x^2 - 5x + 1)^{4/3}$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Cadena</div>
+          $g(x) = 2x^2 - 5x + 1$, $g'(x) = 4x - 5$
+          $$f'(x) = \frac{4}{3}(2x^2 - 5x + 1)^{4/3 - 1} \cdot (4x-5) = \frac{4(4x-5)}{3}(2x^2 - 5x + 1)^{1/3}$$
+          $$\boxed{f'(x) = \frac{4(4x-5)\sqrt[3]{2x^2 - 5x + 1}}{3}}$$
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6.5 PRODUCTO, COCIENTE Y CADENA CON RAÍCES -->
+  <div class="subtema">
+    <h3>6.5 — Producto y Cociente con Raíces</h3>
+
+    <div class="ejemplo">
+      <div class="ejemplo-header" onclick="toggleEjemplo(this)">
+        🔴 Ejemplo Producto + Cadena: $f(x) = x^2 \cdot \sqrt{x+3}$
+      </div>
+      <div class="ejemplo-body">
+        <div class="paso">
+          <div class="paso-label">Identificar u y v</div>
+          $u = x^2$, $u' = 2x$<br>
+          $v = (x+3)^{1/2}$, $v' = \frac{1}{2}(x+3)^{-1/2} = \frac{1}{2\sqrt{x+3}}$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Regla del producto: $f' = u'v + uv'$</div>
+          $$f'(x) = 2x\sqrt{x+3} + x^2 \cdot \frac{1}{2\sqrt{x+3}}$$
+        </div>
+        <div class="paso root-step">
+          <div class="paso-label">Simplificar (denominador común)</div>
+          $$= \frac{2x(x+3) + x^2}{2\sqrt{x+3}} = \frac{2x^2 + 6x + x^2}{2\sqrt{x+3}}$$
+          $$\boxed{f'(x) = \frac{3x^2 + 6x}{2\sqrt{x+3}} = \frac{x(3x+6)}{2\sqrt{x+3}}}$$
+        </div>
+      </div>
+    </div>
+
+    <div class="ejemplo">
+      <div class="ejemplo-header" onclick="toggleEjemplo(this)">
+        🔴 Ejemplo Cociente + Cadena: $f(x) = \dfrac{\sqrt{x-1}}{x^2 + 1}$
+      </div>
+      <div class="ejemplo-body">
+        <div class="paso">
+          <div class="paso-label">Identificar</div>
+          $u = (x-1)^{1/2}$, $u' = \frac{1}{2\sqrt{x-1}}$<br>
+          $v = x^2 + 1$, $v' = 2x$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Regla del cociente: $f' = \dfrac{u'v - uv'}{v^2}$</div>
+          $$f'(x) = \frac{\frac{1}{2\sqrt{x-1}} \cdot (x^2+1) - \sqrt{x-1} \cdot 2x}{(x^2+1)^2}$$
+        </div>
+        <div class="paso root-step">
+          <div class="paso-label">Simplificar (multiplicar num. y den. por $2\sqrt{x-1}$)</div>
+          $$= \frac{(x^2+1) - 4x(x-1)}{2\sqrt{x-1}(x^2+1)^2}$$
+          $$= \frac{x^2+1 - 4x^2+4x}{2\sqrt{x-1}(x^2+1)^2}$$
+          $$\boxed{f'(x) = \frac{-3x^2 + 4x + 1}{2\sqrt{x-1}(x^2+1)^2}}$$
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6.6 EJERCICIOS TIPO EXAMEN -->
+  <div class="subtema">
+    <h3>6.6 — Ejercicios Tipo Examen con Raíces (nivel difícil)</h3>
+
+    <div class="ejemplo">
+      <div class="ejemplo-header" onclick="toggleEjemplo(this)">
+        🔴 Derivar: $f(x) = \dfrac{\sqrt{2x+1}}{\sqrt{3x-2}}$
+      </div>
+      <div class="ejemplo-body">
+        <div class="paso root-step">
+          <div class="paso-label">Reescribir como potencia</div>
+          $f(x) = \left(\frac{2x+1}{3x-2}\right)^{1/2}$. Usamos cadena + cociente.
+        </div>
+        <div class="paso">
+          <div class="paso-label">Sea $g(x) = \dfrac{2x+1}{3x-2}$</div>
+          $g'(x) = \frac{2(3x-2) - 3(2x+1)}{(3x-2)^2} = \frac{6x-4-6x-3}{(3x-2)^2} = \frac{-7}{(3x-2)^2}$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Aplicar cadena</div>
+          $f'(x) = \frac{1}{2}\left(\frac{2x+1}{3x-2}\right)^{-1/2} \cdot \frac{-7}{(3x-2)^2}$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Simplificar</div>
+          $$f'(x) = \frac{-7}{2(3x-2)^2} \cdot \sqrt{\frac{3x-2}{2x+1}}$$
+          $$\boxed{f'(x) = \frac{-7}{2(3x-2)^{3/2}(2x+1)^{1/2}}}$$
+        </div>
+      </div>
+    </div>
+
+    <div class="ejemplo">
+      <div class="ejemplo-header" onclick="toggleEjemplo(this)">
+        🔴 Derivar: $f(x) = (x^2 - 1)^3 \cdot \sqrt{x^2 + 1}$
+      </div>
+      <div class="ejemplo-body">
+        <div class="paso">
+          <div class="paso-label">Identificar: Producto + Cadena</div>
+          $u = (x^2-1)^3$, $u' = 3(x^2-1)^2 \cdot 2x = 6x(x^2-1)^2$<br>
+          $v = (x^2+1)^{1/2}$, $v' = \frac{2x}{2\sqrt{x^2+1}} = \frac{x}{\sqrt{x^2+1}}$
+        </div>
+        <div class="paso">
+          <div class="paso-label">Producto: $f' = u'v + uv'$</div>
+          $$f'(x) = 6x(x^2-1)^2\sqrt{x^2+1} + (x^2-1)^3 \cdot \frac{x}{\sqrt{x^2+1}}$$
+        </div>
+        <div class="paso root-step">
+          <div class="paso-label">Factor común $\frac{x(x^2-1)^2}{\sqrt{x^2+1}}$</div>
+          $$= \frac{x(x^2-1)^2}{\sqrt{x^2+1}}\left[6(x^2+1) + (x^2-1)\right]$$
+          $$= \frac{x(x^2-1)^2}{\sqrt{x^2+1}} \cdot (7x^2 + 5)$$
+          $$\boxed{f'(x) = \frac{x(x^2-1)^2(7x^2+5)}{\sqrt{x^2+1}}}$$
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRACTICA DERIVADAS -->
+  <div class="practica">
+    <h3>Ejercicios de Práctica — Derivadas</h3>
+    <ol>
+      <li class="root-ex">$f(x) = \sqrt{5x - 3}$</li>
+      <li class="root-ex">$f(x) = \sqrt[3]{x^4 + 2x}$</li>
+      <li class="root-ex">$f(x) = \dfrac{1}{\sqrt{x^2 + 4}}$</li>
+      <li class="root-ex">$f(x) = x\sqrt{x^2 - 1}$</li>
+      <li class="root-ex">$f(x) = \sqrt{x} \cdot \sqrt{x+1}$ (simplificar primero)</li>
+      <li class="root-ex">$f(x) = \dfrac{x}{\sqrt{x+2}}$</li>
+      <li class="root-ex">$f(x) = (3x+1)^2 \cdot \sqrt{2x-5}$</li>
+      <li class="root-ex">$f(x) = \dfrac{\sqrt{x+3}}{\sqrt{x-3}}$</li>
+      <li class="root-ex">$f(x) = \sqrt{x + \sqrt{x}}$</li>
+      <li class="root-ex">$f(x) = \left(\sqrt{x^2+1} - x\right)^3$</li>
+      <li>$f(x) = (3x^2-5x)^3$ (cadena sin raíz)</li>
+      <li>$f(x) = \dfrac{(4x-3)^3}{(2x-3)^4}$ (cociente + cadena)</li>
+    </ol>
+
+    <div class="respuestas">
+      <div class="resp-toggle" onclick="toggleResp(this)">▶ Ver Respuestas Detalladas</div>
+      <div class="resp-content">
+
+        <div class="solucion">
+          <div class="solucion-title">🔴 1) $f(x) = \sqrt{5x-3}$</div>
+          <div class="paso root-step">
+            <div class="paso-label">Convertir raíz a exponente fraccionario</div>
+            $f(x) = (5x-3)^{1/2}$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Aplicar regla de la cadena — derivada exterior × derivada interior</div>
+            $f'(x) = \frac{1}{2}(5x-3)^{-1/2} \cdot 5$<br>
+            Interior: $g(x) = 5x-3$, $g'(x) = 5$
+          </div>
+          <div class="resultado">$$f'(x) = \frac{5}{2\sqrt{5x-3}}$$</div>
+        </div>
+
+        <div class="solucion">
+          <div class="solucion-title">🔴 2) $f(x) = \sqrt[3]{x^4 + 2x}$</div>
+          <div class="paso root-step">
+            <div class="paso-label">Convertir — raíz cúbica a exponente $\frac{1}{3}$</div>
+            $f(x) = (x^4 + 2x)^{1/3}$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Cadena — bajar exponente, restar 1, multiplicar por derivada interior</div>
+            $f'(x) = \frac{1}{3}(x^4+2x)^{1/3 - 1} \cdot (4x^3 + 2)$<br>
+            $= \frac{1}{3}(x^4+2x)^{-2/3} \cdot (4x^3+2)$
+          </div>
+          <div class="resultado">$$f'(x) = \frac{4x^3 + 2}{3\sqrt[3]{(x^4+2x)^2}} = \frac{4x^3+2}{3(x^4+2x)^{2/3}}$$</div>
+        </div>
+
+        <div class="solucion">
+          <div class="solucion-title">🔴 3) $f(x) = \dfrac{1}{\sqrt{x^2 + 4}}$</div>
+          <div class="paso root-step">
+            <div class="paso-label">Convertir — mover raíz al numerador con exponente negativo</div>
+            $f(x) = (x^2+4)^{-1/2}$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Cadena — exponente $-\frac{1}{2}$, interior $x^2+4$</div>
+            $f'(x) = -\frac{1}{2}(x^2+4)^{-3/2} \cdot 2x$<br>
+            Nota: $-1/2 - 1 = -3/2$
+          </div>
+          <div class="resultado">$$f'(x) = \frac{-x}{(x^2+4)^{3/2}}$$</div>
+        </div>
+
+        <div class="solucion">
+          <div class="solucion-title">🔴 4) $f(x) = x\sqrt{x^2 - 1}$</div>
+          <div class="paso">
+            <div class="paso-label">Identificar como PRODUCTO — $u = x$, $v = (x^2-1)^{1/2}$</div>
+            $u' = 1$<br>
+            $v' = \frac{1}{2}(x^2-1)^{-1/2} \cdot 2x = \frac{x}{\sqrt{x^2-1}}$ (cadena)
+          </div>
+          <div class="paso">
+            <div class="paso-label">Regla del producto: $f' = u'v + uv'$</div>
+            $f'(x) = 1 \cdot \sqrt{x^2-1} + x \cdot \frac{x}{\sqrt{x^2-1}}$<br>
+            $= \sqrt{x^2-1} + \frac{x^2}{\sqrt{x^2-1}}$
+          </div>
+          <div class="paso root-step">
+            <div class="paso-label">Simplificar — denominador común $\sqrt{x^2-1}$</div>
+            $= \frac{(x^2-1) + x^2}{\sqrt{x^2-1}} = \frac{2x^2-1}{\sqrt{x^2-1}}$
+          </div>
+          <div class="resultado">$$f'(x) = \frac{2x^2 - 1}{\sqrt{x^2-1}}$$</div>
+        </div>
+
+        <div class="solucion">
+          <div class="solucion-title">🔴 5) $f(x) = \sqrt{x} \cdot \sqrt{x+1}$</div>
+          <div class="paso root-step">
+            <div class="paso-label">Simplificar ANTES de derivar — juntar las raíces</div>
+            $f(x) = \sqrt{x} \cdot \sqrt{x+1} = \sqrt{x(x+1)} = \sqrt{x^2+x} = (x^2+x)^{1/2}$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Cadena — interior $g(x) = x^2 + x$, $g'(x) = 2x + 1$</div>
+            $f'(x) = \frac{1}{2}(x^2+x)^{-1/2} \cdot (2x+1)$
+          </div>
+          <div class="resultado">$$f'(x) = \frac{2x+1}{2\sqrt{x^2+x}}$$</div>
+        </div>
+
+        <div class="solucion">
+          <div class="solucion-title">🔴 6) $f(x) = \dfrac{x}{\sqrt{x+2}}$</div>
+          <div class="paso">
+            <div class="paso-label">Regla del COCIENTE — $u = x$, $v = (x+2)^{1/2}$</div>
+            $u' = 1$<br>
+            $v' = \frac{1}{2}(x+2)^{-1/2} \cdot 1 = \frac{1}{2\sqrt{x+2}}$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Aplicar $f' = \frac{u'v - uv'}{v^2}$</div>
+            $$f'(x) = \frac{1 \cdot \sqrt{x+2} - x \cdot \frac{1}{2\sqrt{x+2}}}{(\sqrt{x+2})^2}$$
+            $v^2 = x + 2$
+          </div>
+          <div class="paso root-step">
+            <div class="paso-label">Simplificar numerador — multiplicar por $\frac{2\sqrt{x+2}}{2\sqrt{x+2}}$</div>
+            Numerador: $\sqrt{x+2} - \frac{x}{2\sqrt{x+2}} = \frac{2(x+2) - x}{2\sqrt{x+2}} = \frac{x+4}{2\sqrt{x+2}}$<br>
+            Dividir por $v^2 = x+2$:
+          </div>
+          <div class="resultado">$$f'(x) = \frac{x+4}{2(x+2)^{3/2}}$$</div>
+        </div>
+
+        <div class="solucion">
+          <div class="solucion-title">🔴 7) $f(x) = (3x+1)^2 \cdot \sqrt{2x-5}$</div>
+          <div class="paso">
+            <div class="paso-label">PRODUCTO + CADENA — identificar $u$ y $v$</div>
+            $u = (3x+1)^2$, $u' = 2(3x+1) \cdot 3 = 6(3x+1)$ (cadena)<br>
+            $v = (2x-5)^{1/2}$, $v' = \frac{1}{2}(2x-5)^{-1/2} \cdot 2 = \frac{1}{\sqrt{2x-5}}$ (cadena)
+          </div>
+          <div class="paso">
+            <div class="paso-label">Producto: $f' = u'v + uv'$</div>
+            $f'(x) = 6(3x+1)\sqrt{2x-5} + (3x+1)^2 \cdot \frac{1}{\sqrt{2x-5}}$
+          </div>
+          <div class="paso root-step">
+            <div class="paso-label">Simplificar (opcional) — factor común $\frac{(3x+1)}{\sqrt{2x-5}}$</div>
+            $= \frac{(3x+1)[6(2x-5) + (3x+1)]}{\sqrt{2x-5}} = \frac{(3x+1)(15x-29)}{\sqrt{2x-5}}$
+          </div>
+          <div class="resultado">$$f'(x) = \frac{(3x+1)(15x-29)}{\sqrt{2x-5}}$$</div>
+        </div>
+
+        <div class="solucion">
+          <div class="solucion-title">🔴 8) $f(x) = \dfrac{\sqrt{x+3}}{\sqrt{x-3}}$</div>
+          <div class="paso root-step">
+            <div class="paso-label">Reescribir como una sola potencia — simplifica mucho</div>
+            $f(x) = \sqrt{\frac{x+3}{x-3}} = \left(\frac{x+3}{x-3}\right)^{1/2}$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Cadena — exterior: exponente $\frac{1}{2}$. Interior: cociente $\frac{x+3}{x-3}$</div>
+            Derivada del interior (cociente): $\frac{1 \cdot (x-3) - 1 \cdot (x+3)}{(x-3)^2} = \frac{-6}{(x-3)^2}$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Juntar cadena completa</div>
+            $f'(x) = \frac{1}{2}\left(\frac{x+3}{x-3}\right)^{-1/2} \cdot \frac{-6}{(x-3)^2}$<br>
+            $= \frac{-6}{2(x-3)^2} \cdot \sqrt{\frac{x-3}{x+3}} = \frac{-3}{(x-3)^2} \cdot \frac{\sqrt{x-3}}{\sqrt{x+3}}$
+          </div>
+          <div class="resultado">$$f'(x) = \frac{-3}{(x-3)^{3/2}(x+3)^{1/2}}$$</div>
+        </div>
+
+        <div class="solucion">
+          <div class="solucion-title">🔴 9) $f(x) = \sqrt{x + \sqrt{x}}$</div>
+          <div class="paso root-step">
+            <div class="paso-label">Cadena DOBLE — raíz dentro de raíz</div>
+            $f(x) = \left(x + x^{1/2}\right)^{1/2}$<br>
+            Interior: $g(x) = x + \sqrt{x}$, $g'(x) = 1 + \frac{1}{2\sqrt{x}} = \frac{2\sqrt{x}+1}{2\sqrt{x}}$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Aplicar cadena exterior</div>
+            $f'(x) = \frac{1}{2}(x+\sqrt{x})^{-1/2} \cdot \frac{2\sqrt{x}+1}{2\sqrt{x}}$
+          </div>
+          <div class="resultado">$$f'(x) = \frac{2\sqrt{x}+1}{4\sqrt{x}\sqrt{x+\sqrt{x}}}$$</div>
+        </div>
+
+        <div class="solucion">
+          <div class="solucion-title">🔴 10) $f(x) = \left(\sqrt{x^2+1} - x\right)^3$</div>
+          <div class="paso">
+            <div class="paso-label">Cadena — exterior: potencia 3. Interior: $\sqrt{x^2+1} - x$</div>
+            Derivada del interior:<br>
+            $\frac{d}{dx}\left[\sqrt{x^2+1}\right] = \frac{2x}{2\sqrt{x^2+1}} = \frac{x}{\sqrt{x^2+1}}$<br>
+            $\frac{d}{dx}[-x] = -1$<br>
+            Interior': $\frac{x}{\sqrt{x^2+1}} - 1 = \frac{x - \sqrt{x^2+1}}{\sqrt{x^2+1}}$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Aplicar cadena exterior</div>
+            $f'(x) = 3\left(\sqrt{x^2+1}-x\right)^2 \cdot \frac{x - \sqrt{x^2+1}}{\sqrt{x^2+1}}$
+          </div>
+          <div class="paso root-step">
+            <div class="paso-label">Observar que $x - \sqrt{x^2+1} = -(\sqrt{x^2+1} - x)$ — se puede simplificar</div>
+            $f'(x) = 3(\sqrt{x^2+1}-x)^2 \cdot \frac{-(\sqrt{x^2+1}-x)}{\sqrt{x^2+1}}$<br>
+            $= \frac{-3(\sqrt{x^2+1}-x)^3}{\sqrt{x^2+1}}$
+          </div>
+          <div class="resultado">$$f'(x) = \frac{-3\left(\sqrt{x^2+1}-x\right)^3}{\sqrt{x^2+1}}$$</div>
+        </div>
+
+        <div class="solucion">
+          <div class="solucion-title">11) $f(x) = (3x^2-5x)^3$ — cadena sin raíz</div>
+          <div class="paso">
+            <div class="paso-label">Cadena — exterior: potencia 3, interior: $3x^2 - 5x$</div>
+            Interior': $6x - 5$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Aplicar cadena: bajar exponente, restar 1, multiplicar por derivada interior</div>
+            $f'(x) = 3(3x^2-5x)^2 \cdot (6x-5)$
+          </div>
+          <div class="resultado">$$f'(x) = 3(3x^2-5x)^2(6x-5)$$</div>
+        </div>
+
+        <div class="solucion">
+          <div class="solucion-title">12) $f(x) = \dfrac{(4x-3)^3}{(2x-3)^4}$ — cociente + cadena</div>
+          <div class="paso">
+            <div class="paso-label">Identificar $u$ y $v$ con sus derivadas (cadena en cada uno)</div>
+            $u = (4x-3)^3$, $u' = 3(4x-3)^2 \cdot 4 = 12(4x-3)^2$<br>
+            $v = (2x-3)^4$, $v' = 4(2x-3)^3 \cdot 2 = 8(2x-3)^3$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Cociente: $f' = \frac{u'v - uv'}{v^2}$</div>
+            $$f'(x) = \frac{12(4x-3)^2(2x-3)^4 - (4x-3)^3 \cdot 8(2x-3)^3}{(2x-3)^8}$$
+          </div>
+          <div class="paso">
+            <div class="paso-label">Factor común en el numerador: $(4x-3)^2(2x-3)^3$</div>
+            $= \frac{(4x-3)^2(2x-3)^3[12(2x-3) - 8(4x-3)]}{(2x-3)^8}$<br>
+            Corchete: $24x-36-32x+24 = -8x - 12 = -4(2x+3)$<br>
+            $= \frac{(4x-3)^2 \cdot (-4)(2x+3)}{(2x-3)^5}$
+          </div>
+          <div class="resultado">$$f'(x) = \frac{-4(4x-3)^2(2x+3)}{(2x-3)^5}$$</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- RESUMEN FINAL -->
+<!-- ============================================================ -->
+<section class="charla" id="resumen" style="border-bottom:none;">
+  <div class="charla-header">
+    <div class="charla-num" style="background: linear-gradient(135deg, var(--root-highlight), var(--orange));">★</div>
+    <h2>Resumen: Técnicas con Raíces</h2>
+  </div>
+
+  <div class="tip" style="border-color: var(--root-highlight); background: var(--root-bg);">
+    <h4 style="color: var(--root-highlight);">Las 5 reglas de oro para sobrevivir las raíces</h4>
+    <p><strong>1. Siempre convierte raíces a exponentes fraccionarios</strong> antes de derivar: $\sqrt[n]{x^m} = x^{m/n}$</p>
+    <p><strong>2. Para límites con raíces → racionaliza</strong> multiplicando por la conjugada. Si hay dos raíces, la conjugada cambia el signo entre ellas.</p>
+    <p><strong>3. Para dominios → la expresión bajo raíz par debe ser $\geq 0$.</strong> Resuelve esa inecuación.</p>
+    <p><strong>4. Para inecuaciones con raíces → cuidado al elevar al cuadrado.</strong> Solo puedes hacerlo si ambos lados son $\geq 0$. Analiza casos.</p>
+    <p><strong>5. En límites al infinito → $\sqrt{x^2} = |x|$.</strong> Para $x \to +\infty$, es $x$. Para $x \to -\infty$, es $-x$. ¡Este signo es donde más se equivocan!</p>
+  </div>
+</section>
+
+</div><!-- end container -->
+
+<footer style="text-align:center; padding:30px; color:var(--text-dim); font-size:0.85em; border-top:1px solid var(--border);">
+  Guía de Habilitación — Cálculo Diferencial (Sistemas)<br>
+  Generada con Claude · Junio 2026
+</footer>
+
+<script>
+function toggleEjemplo(header) {
+  const body = header.nextElementSibling;
+  header.classList.toggle('closed');
+  body.classList.toggle('hidden');
+}
+
+function toggleResp(toggle) {
+  const content = toggle.nextElementSibling;
+  if (content.style.display === 'block') {
+    content.style.display = 'none';
+    toggle.textContent = '▶ Ver Respuestas';
+  } else {
+    content.style.display = 'block';
+    toggle.textContent = '▼ Ocultar Respuestas';
+  }
+}
+</script>
+
+</body>
+</html>
